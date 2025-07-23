@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id" class="overflow-hidden">
+
+<head>
+    {{{head}}}
+</head>
+
+<body class="overflow-hidden">
+    <main class="grid max-md:grid-rows-2 md:grid-cols-[repeat(2,_1fr)] h-dvh md:pl-10 justify-between">
+        <div class="pt-2 md:pt-4 md:flex justify-center flex-col">
+            <h1>Masukkan Token</h1>
+            <p class="md:w-[80%]">Untuk memasukkan data, Anda harus memasukkan token untuk kelas anda terlebih dahulu.</p>
+            <form action="/user/login" method="post">
+                <fieldset class="mt-4 mb-2">
+                    <label for="token">Token</label>
+                    <input type="text" placeholder="Masukkan token anda..." id="token" name="token" class="my-2 max-sm:min-w-55">
+                    
+                </fieldset>
+                <button class="btn-primary" type="submit">Masuk</button>
+            </form>
+        </div>
+        <div class="flex items-end justify-end w-[100%] md:h-svh">
+            <img src="/asset/undraw_authentication_tbfc.svg" class="relative -bottom-2 -right-10 md:-right-26 md:-bottom-7 h-full" alt="">
+        </div>
+    </main>
+</body>
+
+</html>
