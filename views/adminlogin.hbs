@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html lang="id" class="overflow-hidden">
-<head>
+  <head>
     {{{head}}}
-</head>
-<body>
-    <main class="grid max-md:grid-rows-2 md:grid-cols-[repeat(2,_1fr)] h-dvh md:pl-5 justify-between">
-        <div class="pt-2 md:pt-4 md:flex justify-center flex-col w-[80%] max-md:pl-1 md:pl-6">
-            <h1>Login Untuk Mengakses Dashboard</h1>
-            <form action="/admin/login" method="post">
-                <fieldset class="mt-4 mb-2">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" name="username" class="my-2 max-sm:min-w-60 md:w-80">
-                    <label for="password">Password</label>
-                    <div class="flex items-center">
-                        <input type="password" id="password" placeholder="Enter your password" name="password" class="my-2 max-sm:min-w-60 md:w-80">
-                        <div class="material-symbols-outlined pass-eye -translate-x-9">visibility_off</div>
-                    </div>
-                </fieldset>
-                <button class="btn-primary" type="submit">Masuk</button>
-            </form>
-        </div>
-        <div class="flex items-end md:items-center justify-end w-[100%] md:h-svh">
-            <img src="/asset/undraw_dev-productivity_5wps-cropped.svg" class="h-[75%]" alt="">
-        </div>
+  </head>
+  <body>
+    {{{headerHTML}}}
+    <main class="grid h-dvh justify-between max-md:grid-rows-2 md:grid-cols-[repeat(2,_1fr)] md:pl-5">
+      <div class="w-[80%] flex-col justify-center pt-2 max-md:pl-1 md:flex md:pt-4 md:pl-6">
+        <h1>
+          Login Untuk Mengakses Dashboard
+        </h1>
+        {{{error}}}
+        <form action="/admin/login" method="post">
+          <fieldset class="mt-4 mb-2">
+            <label for="username">
+              Username
+            </label>
+            <input type="text" id="username" placeholder="Enter your username" name="username" class="my-2 max-sm:min-w-60 md:w-80" />
+            <label for="password">
+              Password
+            </label>
+            <div class="flex items-center">
+              <input type="password" id="password" placeholder="Enter your password" name="password" class="my-2 max-sm:min-w-60 md:w-80" />
+              <div class="material-symbols-outlined pass-eye -translate-x-9">
+                visibility_off
+              </div>
+            </div>
+          </fieldset>
+          <button class="btn-primary" type="submit">
+            Masuk
+          </button>
+        </form>
+      </div>
+      <div class="-z-10 flex w-[100%] items-end justify-end md:h-svh md:items-center">
+        <img src="/asset/undraw_dev-productivity_5wps-cropped.svg" class="animate-slide-fr h-[75%]" alt="" />
+      </div>
     </main>
-</body>
+  </body>
 </html>
