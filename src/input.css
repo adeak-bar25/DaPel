@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #8b84f8;
+  --color-secondary: #ffda38;
+
+  --animate-float-fb: float-fb 1s ease-in-out;
+  --animate-slide-fr: slide-fr 1s ease-in-out;
+
+  @keyframes float-fb {
+    0% {
+      translate: 0 100%;
+      opacity: 0;
+    }
+    100% {
+      translate: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-fr {
+    0% {
+      translate: 100% 0;
+      opacity: 0;
+    }
+    100% {
+      translate: 0;
+      opacity: 1;
+    }
+  }
+}
+
 @layer base {
   body {
     font-family: "TikTok Sans", sans-serif;
@@ -7,14 +37,23 @@
   }
   main {
     /* width: clamp(350px, 80%, 768px); */
-    @apply mx-auto pl-2.5;
+    @apply mx-auto pl-2.5 max-md:pt-19;
   }
   h1 {
     font-size: calc(2.2rem + 0.75vw + 0.75vh);
-    @apply font-bold text-gray-900 tracking-tight leading-12 md:leading-13;
+    @apply leading-12 font-bold tracking-normal md:leading-13;
+  }
+
+  h2 {
+    font-size: calc(1.2rem + 0.4vw + 0.4vh);
+    @apply leading-12 font-medium tracking-normal md:leading-13;
   }
   p {
     font-size: calc(0.9rem + 0.25vw + 0.25vh);
+  }
+
+  a:not(.btn-primary):not(.btn-outline):hover {
+    @apply underline;
   }
   label {
     font-size: calc(1.1rem + 0.1vw + 0.1vh);
@@ -22,7 +61,11 @@
   }
   input {
     all: unset;
-    @apply h-9 border-2 border-gray-800/60 block rounded-sm px-2;
+    @apply block h-9 rounded-sm border-2 border-gray-800/60 px-2;
+  }
+
+  .brand {
+    @apply cursor-pointer select-none;
   }
 }
 
@@ -39,7 +82,13 @@
 
 @layer components {
   .btn-primary {
-    @apply px-3 py-1.5 bg-violet-500 text-white rounded-sm;
+    @apply rounded-sm bg-violet-500 px-3.5 py-2 text-white;
     font-size: calc(0.9rem + 0.15vw + 0.15vh);
+  }
+  .btn-outline {
+    @apply rounded-sm border-2 px-3.5 py-2 max-[480px]:px-2 max-[480px]:py-1;
+  }
+  .sep-y {
+    @apply h-full border-l-2 max-[480px]:px-2 max-[480px]:py-1;
   }
 }

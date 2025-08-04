@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    {{{head}}}
+  </head>
+  <body>
+    {{{headerHTML}}}
+    <main class="below-header px-3 pt-3 md:px-6 md:pt-5 ">
+      <h1>Halo Admin, Selamat <span id="time">Siang</span>!
+      </h1>
+      <section class="my-4">
+        <h2>At a glance</h2>
+        <div class="grid grid-cols-3 gap-4 max-md:grid-cols-1 md:mt-3 [&_p:first-child]:font-bold [&>*]:flex [&>*]:flex-col [&>*]:justify-between [&>*]:gap-4 [&>*]:rounded-md [&>*]:p-4 [&>div>div>p:last-child]:font-medium [&>p:first-child]:text-lg">
+          <div class="bg-amber-200/80">
+            <p>Jumlah Data/Jumlah Yang Diharapkan</p>
+            <p class="mb-3 text-5xl font-bold">7/50</p>
+          </div>
+          <div class="bg-emerald-300/80">
+            <p>Waktu Input Terakhir</p>
+            <div>
+              <p class="text-4xl">17 Juni 2025</p>
+              <p>11 : 00 Wita</p>
+            </div>
+          </div>
+          <div class="bg-rose-300/80">
+            <p>Waktu Login Terakhir (Admin sebelumnya)</p>
+            <div>
+              <p class="text-4xl">17 Juni 2025</p>
+              <p>10 : 20 Wita</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2>Data Siswa</h2>
+        <table class="w-full text-lg table-auto border-collapse border border-slate-400 text-left [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
+          <thead>
+            <tr>
+              <th class="w-8">No</th>
+              <th>Kelas</th>
+              <th>Nama</th>
+              <th>Nisn</th>
+              <th>Email</th>
+              <th>No. Telpon</th>
+            </tr>
+          </thead>
+          <tbody class="[&_td]:text-lg">
+            <tr>
+              <td>1</td>
+              <td>X TKJ 1</td>
+              <td>Ade Akbar</td>
+              <td>1234567890</td>
+              <td>test@mail.id</td>
+              <td>08123456789</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>
