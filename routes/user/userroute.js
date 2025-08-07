@@ -14,4 +14,8 @@ router.post('/login', (req, res) => {
   res.redirect('/user');
 })
 
+router.get('/input', (req, res) => {
+  renderPage(res, "userinput", "Masukkan Data Anda")
+})
+
 export default router;
