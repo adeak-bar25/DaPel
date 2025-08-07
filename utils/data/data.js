@@ -1,31 +1,9 @@
-import mongoose from 'mongoose';
-import Student from './studentmodel.js';
-import Admin from './adminmodel.js';
+import Student from './model/studentmodel.js';
+import Admin from './model/adminmodel.js';
+import SessionAdmin from './model/adminsession.js';
 
-
-// // Add one Data
-// try{
-
-//     console.log(await Student.find())
-
-// const addOne = new Student({
-//     name : 'aswatul fiki',
-//     grade : 10,
-//     class : "TKJ 1",
-//     age: 17,
-//     phone : "0812345678",
-//     email: 'fiki@mail.com'
-    
-// })
-
-// console.log(await addOne.save())
-// }catch(err){
-//     console.log(err.message)
-// }
 
 export async function addAdmin(name, passwordHash){
-    console.log('Add To DB Check ✅')
-    console.log(name, passwordHash)
     try {
         const newAdmin = new Admin({ name, passwordHash})
         return await newAdmin.save()
@@ -49,3 +27,25 @@ export async function getAdminInfo(name){
         console.error(error)   
     }
 }
+
+export async function getAllStudentData(){
+    return await Student.find()
+}
+
+export async function addAdminSession(adminName, sessionUUID){
+    try {
+        let adminID = null
+        try{
+            const {_id} = await getAdminInfo(adminName)
+            adminID = _id
+        }catch(error){
+            if(!adminID) throw `Username "${adminName}" is trying make session, but not found on database`
+            throw error
+        }
+        const newSessionAdmin = new SessionAdmin({adminID , sessionUUID})
+        return newSessionAdmin.save()
+    } catch (error) {
+        console.error(error)
+    }
+}
+

@@ -1,7 +1,6 @@
 import express from 'express';
-import { renderPage } from './../route.js';
-import { checkTotalAdmin } from '../../utils/data/data.js';
-import { authenticateAdmin, createNewAdminAccount } from '../../utils/auth.js';
+import { renderPage, renderStudentData, checkTotalAdmin, getAllStudentData } from './../route.js';
+import { authenticateAdmin, createNewAdminAccount, createNewAdminSession } from '../../utils/auth.js';
 
 const router = express.Router();
 
@@ -16,16 +15,13 @@ router.get('/login', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  console.log('Req Check ✅')
-  console.log(req.body)
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).send('Username and password are required');
-  }
-  console.log('Login attempt from admin with username:', req.body.username);
-  const auth = await authenticateAdmin(req.body.username, req.body.password)
-  console.log('Authentication result:', auth);
+  if (!req.body.username || !req.body.password) return res.status(400).send('Username and password are required');
+  console.log(`Login attempt from admin with username: "${req.body.username}" at ${new Date().toLocaleString()}`);
+  const auth = await authenticateAdmin(req.body.username, req.body.password);
   if(auth){
-    res.status(303).send('Login successful');
+    await createNewAdminSession(req.body.username, res)
+    res.status(303).redirect('/admin/dashboard')
+    console.log(`Username : "${req.body.username}" successfully login at ${new Date().toLocaleString()} \n`)
   }else{
     res.status(401)
     renderPage(res, 'adminlogin', 'Login Sebagai Admin', null, 'Username atau Password salah');
@@ -33,7 +29,6 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/new', async (req, res) => {
-  console.log('Req Check ✅')
   console.log(req.body)
   if (!req.body.username || !req.body.password) {
     return res.status(400).send('Username and password are required');
@@ -47,8 +42,8 @@ router.post('/new', async (req, res) => {
   res.redirect('/admin/dashboard');
 })
 
-router.get('/dashboard', (req, res) => {
-  renderPage(res, 'dashboard', 'Dashboard Admin')
+router.get('/dashboard', async (req, res) => {
+  renderPage(res, 'dashboard', 'Dashboard Admin', {studentData : renderStudentData(await getAllStudentData())} )
 })
 
 export default router;

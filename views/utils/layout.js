@@ -27,13 +27,14 @@ export function errorElement(message) {
             </div>`
 }
 
-export function tableRow(index, className, name, nisn, email, phone) { 
+export function tableRow(studentObj, index) { 
     return `<tr>
                 <td>${index}</td>
-                <td>${className}</td>
-                <td>${name}</td>
-                <td>${nisn}</td>
-                <td>${email}</td>
-                <td>${phone}</td>
+                <td>${[studentObj.grade, studentObj.class].join(' ')}</td>
+                <td>${studentObj.nisn}</td>
+                <td>${studentObj.name}</td>
+                <td>${studentObj.age}</td>
+                <td>${studentObj.email}</td>
+                <td>${studentObj.phone}</td>
             </tr>`
 }

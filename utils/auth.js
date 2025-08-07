@@ -1,30 +1,40 @@
-import { getAdminInfo, addAdmin } from "./data/data.js";
+import { getAdminInfo, addAdmin, addAdminSession } from "./data/data.js";
+import { saltRounds, storeTimeCookieSec } from './config.js'
 import bcrypt from "bcrypt";
+
+// console.log("Salt",saltRounds)
 
 export async function authenticateAdmin(username, password){
     const admin = await getAdminInfo(username)
-    console.log("Query From", username, "is", admin)
     if(!admin) return false
-    console.log('Auth Check ✅')
-    console.log(admin)
-    return bcrypt.compare(password, await admin.passwordHash)
+    return bcrypt.compare(password, admin.passwordHash)
 }
 
 export async function createNewAdminAccount(username, password) {
     try {
-        console.log('Auth Check ✅')
         console.log(username, password)
         await addAdmin(username, await hashPassword(password))
-        console.log('New admin account created:', username);
+        console.log(`New admin account created, username : "${username}"`);
     } catch (error) {
         console.error(error);
     }
 }
 
-function hashPassword(password){
-    console.log('Hashing Check ✅')
-    return bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS))
+export async function createNewAdminSession(adminName, res){
+    const sessionUUID = generateUUID()
+    try {
+        console.log(adminName, sessionUUID)
+        await addAdminSession(adminName, sessionUUID)
+    } catch (error) {
+        throw error
+    }
+    res.cookie('login', sessionUUID, { maxAge: parseInt(storeTimeCookieSec) * 1000, httpOnly: true })
 }
 
+function hashPassword(password){
+    return bcrypt.hash(password, saltRounds)
+}
 
-
+function generateUUID(){
+    return crypto.randomUUID()
+}
