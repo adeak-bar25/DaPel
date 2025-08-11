@@ -31,6 +31,12 @@ const studentSchema = new mongoose.Schema({
             message: (props) => console.error(`"${props.path} : ${props.value}" isn't a valid indonesian phone number!`)
         }
     },
+    gender: {
+        type: String,
+        required : true,
+        lowercase: true,
+        enum : ["man", "woman"]
+    },
     email: {
         type: String,
         required : true,

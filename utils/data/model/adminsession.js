@@ -10,13 +10,27 @@ const SessionSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
-    createdAt : {
+    lastLogin : {
         type : Date,
-        immutable : true,
         default : () => new Date(),
         expires : storeTimeCookieSec
     }
 })
+
+SessionSchema.statics.isAvailable = function(sessionUUID){
+    this.find({
+        sessionUUID : sessionUUID
+    })
+}
+SessionSchema.statics.lastBeforeLatestLogin = async function(){
+    const [data] = await this.find().sort({lastLogin : -1}).skip(1).limit(1)
+    return data.lastLogin
+}
+
+SessionSchema.methods.updateLoginDate = function(){
+    this.lastLogin = new Date()
+    return this.save()
+}
 
 const SessionAdmin = mongoose.model('SessionAdmin', SessionSchema)
 

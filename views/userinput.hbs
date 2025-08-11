@@ -5,8 +5,32 @@
   </head>
   <body class="min-h-dvh">
     {{{headerHTML}}}
-    <main class="min-h-dvh justify-between md:flex md:justify-between">
-        
+    <main class="min-h-dvh justify-between grid md:grid-cols-[45%_1fr] md:justify-between">
+        <div class="md:flex items-center h-[calc(100vh-var(--header-height))]">
+          <img class="-z-10 pl-4 pr-10 h-[80dvh]" src="/asset/undraw_personal-information_h7kf.svg" alt="">
+        </div>
+        <div class="col-start-2 ml-18 flex flex-col justify-center">
+          <h1>Masukkan Data Pribadi Anda</h1>
+          <p class="my-3">Silahkan masukkan data pribadi anda, pastikan Anda memasukkannya dengan benar! </p>
+          <form action="/user/input" method="post" class="[&_input]:w-[90%] [&>input]:mb-1 [&>input]:mt-0.5">
+            <label for="name">Nama</label>
+            <input type="text" name="name" id="name" placeholder="Masukkan nama anda" required>
+            <label for="class">Kelas</label>
+            <input disabled value="X TJKT 1" type="text" class="bg-gray-200" id="class">
+            <label for="nisn">NISN</label>
+            <input type="number" id="nisn" name="nisn" placeholder="Masukkan nisn anda" required>
+            <label for="gender">Jenis Kelamin</label>
+            <select class="block" name="gender" id="gender" required>
+              <option value="man">Laki-laki</option>
+              <option value="woman">Perempuan</option>
+            </select>
+            <label for="email">Email</label>
+            <input type="email" name="email" placeholder="Masukkan email anda" id="email" required>
+            <label for="phone">No.Telpon</label>
+            <input type="phone" name="phone" placeholder="Masukkan Nomor Telpon anda" id="phone" required>
+            <button type="submit" class="btn-primary my-4">Kirim</button>
+          </form>
+        </div>
     </main>
   </body>
 </html>

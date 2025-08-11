@@ -11,6 +11,19 @@ const AdminSchema = new mongoose.Schema({
     }
 })
 
+
+AdminSchema.methods.updateLoginDate = function () {
+    this.lastLogin = new Date()
+    try {
+        return this.save()
+    } catch (error) {
+        throw error
+    }
+}
+
+
 const Admin = mongoose.model('admin', AdminSchema)
+
+
 
 export default Admin

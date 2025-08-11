@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    {{{head}}}
+  </head>
+  <body class="bg-slate-50">
+    {{{headerHTML}}}
+    <main class="below-header pl-3 pr-2 pt-3 md:px-6 md:pt-5">
+      <h1>Data Siswa</h1>
+        <h2>Table Data Siswa</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-lg table-auto border-collapse border border-slate-400 text-left [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
+            <thead>
+              <tr>
+                <th class="w-8">No</th>
+                <th>Kelas</th>
+                <th>Nisn</th>
+                <th>Nama</th>
+                <th>Umur</th>
+                <th>Email</th>
+                <th>No. Telpon</th>
+              </tr>
+            </thead>
+            <tbody class="[&_td]:text-lg">
+              {{{studentData}}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    {{{aside}}}
+  </body>
+</html>

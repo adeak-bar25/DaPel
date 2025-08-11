@@ -18,4 +18,8 @@ router.get('/input', (req, res) => {
   renderPage(res, "userinput", "Masukkan Data Anda")
 })
 
+router.post('/input', (req, res) => {
+  console.log(req.body)
+})
+
 export default router;
