@@ -37,6 +37,46 @@ if(greetElm){
 }
 const bellowHeader = document.querySelector('.below-header')
 
+const headerHeight = getComputedStyle(document.querySelector('header'))['height']
+
+document.querySelector(":root").style.setProperty("--header-height", headerHeight)
+
 if(bellowHeader){
-    bellowHeader.style.marginTop = getComputedStyle(document.querySelector('header'))['height']
+    bellowHeader.style.marginTop = headerHeight
 }
+
+const aside = document.querySelector('aside')
+
+const main = document.querySelector('main');
+if(aside){
+    resize()
+    await document.fonts.ready
+    resize()
+    window.addEventListener('resize', () => {
+        setTimeout(() => {
+            resize()
+        }, 500)
+    })
+}
+function resize(){
+    aside.style.top = headerHeight;
+    const asideWidth = getComputedStyle(aside)['width']
+    main.style.width =`calc(100% - ${asideWidth})`
+    main.style.marginLeft = asideWidth
+}
+
+if(lastLogin){
+    document.getElementById("time-login-last").textContent = new Date(lastLogin).toLocaleTimeString("id-ID", {timeZoneName : "short", hour : "numeric", minute : "numeric"});
+    document.getElementById("date-login-last").textContent = new Date(lastLogin).toLocaleDateString("id-ID", {day : "numeric", month : "long", year : "numeric"});
+}
+
+const inputNum = document.querySelectorAll('input[type="number"]')
+
+inputNum.forEach((el) => {
+    el.addEventListener('keydown', (e) =>{
+        if(e.code === "KeyE" || e.code === "Equal" || e.code === "Minus" || e.code === "Period" || e.code === "ArrowUp" || e.code === "ArrowDown") e.preventDefault()
+    })
+    el.addEventListener('input', function(){
+        if(this.id === 'nisn') if(this.value.length > 10) this.value = this.value.slice(0, 10)
+    })
+})

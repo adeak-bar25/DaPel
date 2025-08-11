@@ -10,11 +10,19 @@ export async function authenticateAdmin(username, password){
     return bcrypt.compare(password, admin.passwordHash)
 }
 
+export function isAdmin(res){
+    if(!res.cookies.loginDapelSes) return false
+    const sessionUUID = res.cookies.loginDapelSes
+    try {
+        
+    } catch (error) {
+        
+    }
+}
+
 export async function createNewAdminAccount(username, password) {
     try {
-        console.log(username, password)
         await addAdmin(username, await hashPassword(password))
-        console.log(`New admin account created, username : "${username}"`);
     } catch (error) {
         console.error(error);
     }
@@ -28,7 +36,7 @@ export async function createNewAdminSession(adminName, res){
     } catch (error) {
         throw error
     }
-    res.cookie('login', sessionUUID, { maxAge: parseInt(storeTimeCookieSec) * 1000, httpOnly: true })
+    res.cookie('loginDapelSes', sessionUUID, { maxAge: parseInt(storeTimeCookieSec) * 1000, httpOnly: true })
 }
 
 function hashPassword(password){

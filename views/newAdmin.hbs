@@ -13,6 +13,7 @@
         <p class="mt-4">
           Untuk saat ini, Site ini belum memiliki admin. Anda dapat membuat akun dan mengakses dashboard. Jangan khawatir, Anda tetap dapat membuat akun untuk admin lain melalui dashboard.
         </p>
+        {{{error}}}
         <form action="/admin/new" method="post">
           <fieldset class="mt-4 mb-2">
             <label for="username">
@@ -24,7 +25,7 @@
             </label>
             <div class="flex items-center">
               <input type="password" id="password" placeholder="Buat Password" name="password" class="my-2 max-sm:min-w-60 md:w-80" />
-              <div class="material-symbols-outlined pass-eye -translate-x-9">
+              <div class="material-symbols-rounded pass-eye -translate-x-9">
                 visibility_off
               </div>
             </div>
@@ -33,7 +34,7 @@
             </label>
             <div class="flex items-center">
               <input type="password" id="confirm-password" placeholder="Masukkan Kembali Password" class="my-2 max-sm:min-w-60 md:w-80" />
-              <div class="material-symbols-outlined pass-eye -translate-x-9">
+              <div class="material-symbols-rounded pass-eye -translate-x-9">
                 visibility_off
               </div>
             </div>

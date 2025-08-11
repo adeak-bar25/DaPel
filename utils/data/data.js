@@ -3,12 +3,14 @@ import Admin from './model/adminmodel.js';
 import SessionAdmin from './model/adminsession.js';
 
 
+export {Admin, SessionAdmin, Student}
+
 export async function addAdmin(name, passwordHash){
     try {
         const newAdmin = new Admin({ name, passwordHash})
         return await newAdmin.save()
     } catch (error) {
-        console.error(error.message)
+        throw error
     }
 }
 
@@ -16,7 +18,7 @@ export async function checkTotalAdmin(){
     try {
         return await Admin.countDocuments()
     } catch (error) {
-        console.error(error)
+        throw error
     }
 }
 
@@ -24,7 +26,7 @@ export async function getAdminInfo(name){
     try {
         return await Admin.findOne({name : name})
     } catch (error) {
-        console.error(error)   
+        throw error  
     }
 }
 
@@ -45,7 +47,7 @@ export async function addAdminSession(adminName, sessionUUID){
         const newSessionAdmin = new SessionAdmin({adminID , sessionUUID})
         return newSessionAdmin.save()
     } catch (error) {
-        console.error(error)
+        throw error
     }
 }
 

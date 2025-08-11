@@ -13,12 +13,13 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@dicebear/collection": "^9.2.3",
+    "@dicebear/core": "^9.2.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "hbs": "^4.2.0",
-    "mongodb": "^6.18.0",
     "mongoose": "^8.17.0",
     "validator": "^13.15.15"
   },

@@ -3,7 +3,7 @@
 @theme {
   --color-primary: #8b84f8;
   --color-secondary: #ffda38;
-
+  --font-sans: "TikTok Sans", Roboto, sans-serif;
   --animate-float-fb: float-fb 1s ease-in-out;
   --animate-slide-fr: slide-fr 1s ease-in-out;
 
@@ -32,8 +32,7 @@
 
 @layer base {
   body {
-    font-family: "TikTok Sans", sans-serif;
-    @apply bg-violet-50/25 selection:bg-violet-500/35;
+    @apply font-sans bg-violet-50/25 selection:bg-violet-500/35 selection:text-slate-950;
   }
   main {
     /* width: clamp(350px, 80%, 768px); */
@@ -48,8 +47,22 @@
     font-size: calc(1.2rem + 0.4vw + 0.4vh);
     @apply leading-12 font-medium tracking-normal md:leading-13;
   }
+
+  h3{
+    font-size: calc(1rem + 0.35vw + 0.2vh);
+    @apply leading-12 font-medium tracking-normal md:leading-13;
+  }
+
+  h4{
+    font-size: calc(0.9rem + 0.25vw + 0.1vh);
+    @apply font-medium tracking-normal;
+  }
   p {
     font-size: calc(0.9rem + 0.25vw + 0.25vh);
+  }
+
+  .sm-p{
+    font-size: calc(0.7rem + 0.15vw + 0.25vh);
   }
 
   a:not(.btn-primary):not(.btn-outline):hover {
@@ -67,16 +80,37 @@
   .brand {
     @apply cursor-pointer select-none;
   }
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
 }
 
 @layer utilities {
-  .material-symbols-outlined {
+  .material-symbols-rounded {
     font-variation-settings:
       "FILL" 0,
       "wght" 400,
       "GRAD" 0,
       "opsz" 24;
-    @apply select-none;
+    @apply select-none cursor-pointer text-slate-950;
+  }
+  .material-symbols-rounded:hover{
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+      @apply text-violet-800;
   }
 }
 

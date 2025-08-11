@@ -1,6 +1,7 @@
 import express from 'express';
 import { renderPage, renderStudentData, checkTotalAdmin, getAllStudentData } from './../route.js';
 import { authenticateAdmin, createNewAdminAccount, createNewAdminSession } from '../../utils/auth.js';
+import { SessionAdmin } from '../../utils/data/data.js';
 
 const router = express.Router();
 
@@ -15,8 +16,8 @@ router.get('/login', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-  if (!req.body.username || !req.body.password) return res.status(400).send('Username and password are required');
-  console.log(`Login attempt from admin with username: "${req.body.username}" at ${new Date().toLocaleString()}`);
+  if (!req.body.username || !req.body.password) {res.status(400); return renderPage(res, 'adminlogin', 'Login Sebagai Admin', null, 'Username dan Password harus diisi');}
+  console.log(`Login attempt with username: "${req.body.username}" at ${new Date().toLocaleString()}`);
   const auth = await authenticateAdmin(req.body.username, req.body.password);
   if(auth){
     await createNewAdminSession(req.body.username, res)
@@ -29,21 +30,39 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/new', async (req, res) => {
-  console.log(req.body)
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).send('Username and password are required');
+  if(await checkTotalAdmin() > 0) {
+    res.status(403);
+    return renderPage(res, 'adminlogin', 'Login Sebagai Admin', null, 'Admin sudah ada, silahkan login!');
   }
-  if(await checkTotalAdmin() > 0){
-    return res.status(401).send('Admin already exists, you should make new account via dashboard');
+  if (!req.body.username || !req.body.password) {
+    res.status(400);
+    return renderPage(res, 'newadmin', 'Daftar Admin', null, 'Username dan Password harus diisi');
   }
   await createNewAdminAccount(req.body.username, req.body.password);
   console.log('New admin account created:', req.body.username);
-  res.status(303)
-  res.redirect('/admin/dashboard');
+  await createNewAdminSession(req.body.username, res)
+  res.status(303).redirect('/admin/dashboard');
 })
 
+router.use('/dashboard/', (req, res, next) => {
+  next()
+})
+
+
 router.get('/dashboard', async (req, res) => {
-  renderPage(res, 'dashboard', 'Dashboard Admin', {studentData : renderStudentData(await getAllStudentData())} )
+  renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await SessionAdmin.lastBeforeLatestLogin()})
+})
+
+router.get('/dashboard/data', async (req, res) => {
+  renderPage(res, 'dashboarddata', 'Data - Dashboard Admin', {studentData : renderStudentData(await getAllStudentData())} )
+})
+
+router.get('/dashboard/options', (req, res) => {
+  renderPage(res, 'dashboardoption', 'Option - Dashboard Admin')
+})
+
+router.get('/dashboard/control', (req, res) => {
+  renderPage(res, 'dashboardcontrol', 'Control - Dashboard Admin')
 })
 
 export default router;
