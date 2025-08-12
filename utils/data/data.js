@@ -14,13 +14,6 @@ export async function addAdmin(name, passwordHash){
     }
 }
 
-export async function checkTotalAdmin(){
-    try {
-        return await Admin.countDocuments()
-    } catch (error) {
-        throw error
-    }
-}
 
 export async function getAdminInfo(name){
     try {
@@ -41,7 +34,7 @@ export async function addAdminSession(adminName, sessionUUID){
             const {_id} = await getAdminInfo(adminName)
             adminID = _id
         }catch(error){
-            if(!adminID) throw `Username "${adminName}" is trying make session, but not found on database`
+            if(!adminID) throw `Username "${adminName}" is trying make session, but username is not found on database`
             throw error
         }
         const newSessionAdmin = new SessionAdmin({adminID , sessionUUID})

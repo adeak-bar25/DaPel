@@ -1,3 +1,16 @@
+import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm';
+import utc from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/utc/+esm';
+import timezone from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/timezone/+esm';
+import advancedFormat from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/advancedFormat/+esm';
+import 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/locale/id/+esm';
+
+dayjs.extend(utc); 
+dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
+
+
+console.log(dayjs().locale('id').format('dddd, D MMMM YYYY'));
+
 const brand = document.querySelector('div.brand')
 
 brand.addEventListener('click', () => {
@@ -14,7 +27,6 @@ if(eyeIcon.length > 0){
         })
     })
 }
-
 
 function getTime(){
     const hour = new Date().getHours()
@@ -65,9 +77,20 @@ function resize(){
     main.style.marginLeft = asideWidth
 }
 
-if(lastLogin){
-    document.getElementById("time-login-last").textContent = new Date(lastLogin).toLocaleTimeString("id-ID", {timeZoneName : "short", hour : "numeric", minute : "numeric"});
-    document.getElementById("date-login-last").textContent = new Date(lastLogin).toLocaleDateString("id-ID", {day : "numeric", month : "long", year : "numeric"});
+function getTimeZoneCode(){
+    const regex = /[0-9]/
+    const idZone = new Date().toLocaleTimeString("id", {timeZoneName : "short", timeZone : dayjs.tz.guess()}).slice(-4).trimStart()
+    if(regex.test(idZone)) return dayjs().tz(dayjs.tz.guess()).format("zzz")
+    return idZone
+}
+
+if(typeof lastLogin !== 'undefined' && lastLogin !== null){
+    const time = dayjs(lastLogin).tz(dayjs.tz.guess()).format("hh:mm");
+    const date = dayjs(lastLogin).locale('id').tz(dayjs.tz.guess()).format("DD MMMM YYYY");
+    document.getElementById("time-login-last")
+        .textContent = `${time} ${getTimeZoneCode()}`
+    document.getElementById("date-login-last")
+        .textContent = date
 }
 
 const inputNum = document.querySelectorAll('input[type="number"]')

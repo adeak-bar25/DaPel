@@ -23,8 +23,13 @@ SessionSchema.statics.isAvailable = function(sessionUUID){
     })
 }
 SessionSchema.statics.lastBeforeLatestLogin = async function(){
-    const [data] = await this.find().sort({lastLogin : -1}).skip(1).limit(1)
-    return data.lastLogin
+    try {
+        let [data] = await this.find().sort({lastLogin : -1}).skip(1).limit(1)
+        if(!data) data = await this.findOne()
+        return data.lastLogin
+    } catch (error) {
+        throw error
+    }
 }
 
 SessionSchema.methods.updateLoginDate = function(){

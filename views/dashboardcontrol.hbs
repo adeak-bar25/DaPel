@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    {{{head}}}
+  </head>
+  <body class="bg-slate-50 ">
+    {{{headerHTML}}}
+    <main class="below-header pl-3 pr-2 pt-3 md:px-6 md:pt-5">
+        <h1>Kontrol Input</h1>
+        <p>Disini anda dapat mengatur sistem input dari siswa</p>
+      <section tabindex="0" id="generate" class="-mx-3 my-4 flex items-center justify-between group bg-violet-50 hover:bg-violet-400/20 p-4 rounded-md cursor-pointer">
+        <div>
+            <h4 class="font-bold">Generate Input Token</h4>
+            <p class="sm-p">Buat token untuk sesi input data (Perkelas)</p>
+        </div>
+        <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
+      </section>
+
+        <dialog closedby="any" id="generate-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md">
+            <div class="flex justify-between items-center mb-3 gap-8 border-b border-b-slate-950 pb-2">
+                <div>
+                    <h4 class="font-bold">Generate Input Token</h4>
+                    <p class="sm-p break-after-all">Masukkan Nama Kelas dan Jumlah Input Maksimal untuk membuat token</p>
+                </div>
+                <div class="close-dialog material-symbols-rounded hover:bg-violet-300/20 p-2 rounded-full transition-colors cursor-pointer">close</div>
+            </div>
+                <form class="[&_label]:pb-2 [&_label]:block [&_input]:mb-3">
+                    <div class="mb-3 flex gap-7 justify-center">
+                        <fieldset>
+                            <label for="class">Kelas</label>
+                            <input required class="w-10 text-center" type="number" name="class" id="class">
+                        </fieldset>
+                        <fieldset>
+                            <label for="classname">Nama Kelas</label>
+                            <input required type="text" name="classname" id="classname">
+                        </fieldset>
+                        <div class="sep-y border-slate-700 h-20"></div>
+                        <fieldset>
+                            <label for="maxinput">Max Input</label>
+                            <input required class="w-15" type="number" name="maxinput" id="maxinput"></label>
+                        </fieldset>
+                    </div>
+                    <button class="btn-primary cursor-pointer select-none mx-auto block" type="submit">Generate</button>
+                </form>
+        </dialog>
+    </main>
+    {{{aside}}}
+    <script>
+        const generateElm = document.getElementById('generate')
+        const generateDialogElm = document.getElementById('generate-dialog')
+        generateElm.addEventListener('click', () => {
+            generateDialogElm.showModal()
+        })
+
+        document.querySelectorAll('.close-dialog').forEach((elm) => {
+            elm.addEventListener('click', () => {
+                elm.parentElement.parentElement.close()
+            })
+        })
+
+        document.forms[0].addEventListener('submit', function(e){
+            e.preventDefault()
+            const data = Object.fromEntries(new FormData(this).entries());
+            console.log(data)
+            fetch('/admin/dashboard/api/newinputsec', {
+                method : "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body : JSON.stringify(data)
+            })
+        })
+
+    </script>
+  </body>
+</html>
