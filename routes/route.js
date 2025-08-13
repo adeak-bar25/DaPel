@@ -19,6 +19,17 @@ router.use('/user', userRouter)
 
 router.use('/admin', adminRouter)
 
+router.use((req, res) => {
+  res.status(404).send("Not Found")
+})
+
+router.use((err, req, res, next) => {
+  console.log(err);
+  res.status(err.status || 500).json({
+    ok: false,
+    message: err.message || 'Internal Server Error'
+  })
+})
 
 export default router;
 export { renderPage, renderStudentData, getAllStudentData }

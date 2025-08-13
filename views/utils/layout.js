@@ -6,7 +6,7 @@ export function headHTML(pageTitle){
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
             <link href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap" rel="stylesheet">
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=app_registration,arrow_forward_ios,close,home,info,settings,view_list,visibility,visibility_off" />
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=app_registration,arrow_forward_ios,check,close,content_copy,error,home,info,settings,view_list,visibility,visibility_off" />
             <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
             <script src="/js/script.js" type="module" defer></script>`
 }
@@ -30,7 +30,7 @@ export function errorElement(message) {
 export function dashboardAsideElement(file){
     return `<aside class="fixed left-0 bottom-0 flex flex-col gap-1.5 [&>*]:text-center [&_a]:leading-0 [&_a]:block [&_div]:rounded-md [&_div]:p-1 [&>*]:hover:bg-slate-300/30 [&>*]:cursor-pointer px-1 py-3 bg-white border-r border-slate-400/40 select-none">
                 <a href="/admin/dashboard"><div class="material-symbols-rounded ${file.includes('home')? "bg-primary/20" : ""}">home</div></a>
-                <a href="/admin/dashboard/viewdata"><div class="material-symbols-rounded ${file.includes('data')? "bg-primary/20" : ""}">view_list</div></a>
+                <a href="/admin/dashboard/data"><div class="material-symbols-rounded ${file.includes('data')? "bg-primary/20" : ""}">view_list</div></a>
                 <a href="/admin/dashboard/control"><div class="material-symbols-rounded ${file.includes('control')? "bg-primary/20" : ""}">app_registration</div></a>
                 <a href="/admin/dashboard/options"><div class="material-symbols-rounded ${file.includes('option')? "bg-primary/20" : ""}">settings</div></a>
             </aside>`
