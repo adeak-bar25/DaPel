@@ -1,6 +1,7 @@
 import { getAdminInfo, addAdmin, addAdminSession } from "./data/data.js";
 import { saltRounds, storeTimeCookieSec } from './config.js'
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 // console.log("Salt",saltRounds)
 
@@ -45,4 +46,8 @@ function hashPassword(password){
 
 function generateUUID(){
     return crypto.randomUUID()
+}
+
+export function generateInputToken(){
+    return crypto.randomInt(100000, 999999)
 }

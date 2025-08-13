@@ -60,7 +60,9 @@ if(bellowHeader){
 const aside = document.querySelector('aside')
 
 const main = document.querySelector('main');
+
 if(aside){
+    aside.style.top = headerHeight;
     resize()
     await document.fonts.ready
     resize()

@@ -1,7 +1,7 @@
 import express from 'express';
 import { renderPage, renderStudentData, getAllStudentData } from './../route.js';
-import { authenticateAdmin, createNewAdminAccount, createNewAdminSession } from '../../utils/auth.js';
-import { SessionAdmin, Admin } from '../../utils/data/data.js';
+import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken } from '../../utils/auth.js';
+import { SessionAdmin, Admin, InputSession } from '../../utils/data/data.js';
 
 const router = express.Router();
 
@@ -64,11 +64,26 @@ router.get('/dashboard/control', (req, res) => {
   renderPage(res, 'dashboardcontrol', 'Control - Dashboard Admin')
 })
 
-router.post('/dashboard/api/newinputsec', (req, res) =>{
-  console.log(req.body)
-  res.status(200).send({
-    ok : true,
-  })
+router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
+  const {grade, className, maxInput, expireAt} = req.body;
+  const token = generateInputToken()
+  try {
+    await InputSession.addNewSession(grade, className, token, maxInput, expireAt)
+    res.status(200).json({
+      ok : true,
+      message: "Sesi Telah Berhasil Dibuat",
+      token
+    })
+  } catch (error) {
+    if(error.name === "ValidationError"){
+      res.status(400).json({
+        ok : false,
+        message: error.message
+      })
+    }
+    else next(error)
+    console.log(error)
+  }
 })
 
 export default router;

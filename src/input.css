@@ -112,6 +112,14 @@
       "opsz" 24;
       @apply text-violet-800;
   }
+
+  .material-symbols-rounded:hover, .no-hoef{
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
 }
 
 @layer components {

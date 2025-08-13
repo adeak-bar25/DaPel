@@ -1,9 +1,10 @@
 import Student from './model/studentmodel.js';
 import Admin from './model/adminmodel.js';
 import SessionAdmin from './model/adminsession.js';
+import InputSession from './model/inputsession.js';
 
 
-export {Admin, SessionAdmin, Student}
+export {Admin, SessionAdmin, Student, InputSession}
 
 export async function addAdmin(name, passwordHash){
     try {
