@@ -1,7 +1,8 @@
 import express from 'express';
 import { renderPage, renderStudentData, getAllStudentData } from './../route.js';
-import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken } from '../../utils/auth.js';
+import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken } from '../../utils/controller/auth.js';
 import { SessionAdmin, Admin, InputSession } from '../../utils/data/data.js';
+import { ZodError, StudentVSchema, InputSessionVSchema } from './../../utils/controller/validate.js'
 
 const router = express.Router();
 
@@ -65,24 +66,22 @@ router.get('/dashboard/control', (req, res) => {
 })
 
 router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
-  const {grade, className, maxInput, expireAt} = req.body;
+  const {grade, className, maxInput, expiredt} = req.body;
   const token = generateInputToken()
   try {
-    await InputSession.addNewSession(grade, className, token, maxInput, expireAt)
-    res.status(200).json({
-      ok : true,
-      message: "Sesi Telah Berhasil Dibuat",
-      token
-    })
-  } catch (error) {
-    if(error.name === "ValidationError"){
-      res.status(400).json({
+    const validatedInput = InputSessionVSchema.safeParse({grade, className, maxInput, token, expireAt : new Date(expireAt).toISOString()})
+    console.log(validatedInput)
+    if(!validatedInput.success) {
+      const errorMsgArr = validatedInput.error.issues.map(e => e.message)
+      return res.status(400).json({
         ok : false,
-        message: error.message
+        msg : errorMsgArr.length > 1? [errorMsgArr.slice(0, errorMsgArr.length - 1).join(", ") , errorMsgArr[errorMsgArr.length - 1]].join(", dan "): errorMsgArr[0]
       })
     }
-    else next(error)
-    console.log(error)
+    // InputSession.addNewSession()
+    return res.json({ok: true,token})
+  }catch (err) {
+    next(err)
   }
 })
 

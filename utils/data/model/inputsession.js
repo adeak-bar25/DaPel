@@ -17,7 +17,7 @@ const InputSessionSchema = new mongoose.Schema({
         type : Number,
         required : [true, "Jumlah Maksimal Input Tidak Boleh Kosong!"]
     },
-    expiredAt: {
+    expireAt: {
         type : Date,
         default : null,
         expires : 0,
@@ -28,9 +28,9 @@ const InputSessionSchema = new mongoose.Schema({
     }
 })
 
-InputSessionSchema.statics.addNewSession = async function(grade, className, token, maxInput, expiredAt){
+InputSessionSchema.statics.addNewSession = async function(grade, className, token, maxInput, expireAt){
     try {
-        const newInputSession = await this.create({grade, className, token, maxInput, expiredAt})
+        const newInputSession = await this.create({grade, className, token, maxInput, expireAt})
         newInputSession.save()
     } catch (error) {
         throw error

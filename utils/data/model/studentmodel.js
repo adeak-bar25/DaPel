@@ -7,6 +7,10 @@ const studentSchema = new mongoose.Schema({
         required : true,
         set : v => capitalizeName(v)
     },
+    nisn: {
+        type: String,
+        required : true
+    },
     grade : {
         type : Number,
         required : true,

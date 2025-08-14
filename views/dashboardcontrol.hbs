@@ -16,7 +16,7 @@
         <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
       </section>
 
-        <dialog closedby="any" id="generate-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md">
+        <dialog closedby="any" id="generate-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md md:max-w-150">
             <div class="flex justify-between items-center mb-3 gap-8 border-b border-b-slate-950 pb-2">
                 <div>
                     <h4 class="font-bold">Generate Input Token</h4>
@@ -25,28 +25,28 @@
                 <div class="close-dialog material-symbols-rounded hover:bg-violet-300/20 p-2 rounded-full transition-colors cursor-pointer">close</div>
             </div>
             <form class="[&_label]:pb-2 [&_label]:block [&_input]:mb-3">
-                <div id="errorElm" class="hidden my-2 bg-rose-300/50 border border-red-600 rounded-md gap-2 p-2 flex-row items-center text-center">
+                <div id="errorElm" class="hidden my-2 bg-rose-300/50 border border-red-600 rounded-md gap-2 p-2 flex-row items-center">
                     <div class="material-symbols-rounded !text-red-600">error</div>
-                    <p>Error : <span id="errormsg"></span></p>
+                    <p>Error : <span id="errormsg" class="break-words"></span></p>
                 </div>
                 <div class="mb-3 flex gap-7 justify-center">
                     <fieldset>
                         <label for="class">Kelas</label>
-                        <input required class="w-10 text-center" type="number" name="grade" id="class">
+                        <input class="w-10 text-center" type="number" name="grade" id="class">
                     </fieldset>
                     <fieldset>
                         <label for="className">Nama Kelas</label>
-                        <input required type="text" name="className" id="classname">
+                        <input type="text" name="className" id="classname">
                     </fieldset>
                     <div class="sep-y border-slate-700 h-20"></div>
                     <fieldset>
                         <label for="maxinput">Max Input</label>
-                        <input required class="w-15" type="number" name="maxInput" id="maxinput"></label>
+                        <input class="w-15" type="number" name="maxInput" id="maxinput"></label>
                     </fieldset>
                 </div>
                 <fieldset class="mx-auto w-fit flex flex-col justify-center">
                     <label for="expire-at" class="text-center">Batas Waktu Input (Opsional)</label>
-                    <input type="date" name="expireAt" id="expire-at" placeholder="Hello">
+                    <input type="datetime-local" name="expireAt" id="expire-at" placeholder="Hello">
                 </fieldset>
                 <button class="btn-primary cursor-pointer select-none mx-auto mt-2 block" type="submit">Generate</button>
             </form>
@@ -64,22 +64,23 @@
         </dialog>
 
 
-        <dialog closedby="any" id="success-dialog" class="fixed backdrop:bg-black/35 m-auto bg-white p-4 rounded-md">
+        <dialog closedby="closerequest" id="success-dialog" class="fixed backdrop:bg-black/35 m-auto bg-white p-6 rounded-md">
             <div class="flex flex-col items-center gap-2">
                 <div class="material-symbols-rounded bg-green-500/90 p-4 rounded-full !text-white !text-5xl">check</div>
                 <h4>Sesi Berhasil Dibuat</h4>
                 <p>Salin Token dibawah dan bagikan ke siswa</p>
                 <div class="bg-slate-300/40 w-fit font-medium text-2xl border border-slate-400 p-2 rounded-xl flex gap-6">
-                    <p id="code-cp">323232</p>
+                    <p id="code">loading...</p>
                     <div id="copy" class="material-symbols-rounded no-hoef">content_copy</div>
                 </div>
-                <button class="btn-primary block mt-4">Ok</button>
+                <button class="btn-primary block mt-4 close-dialog">Ok</button>
             </div>
         </dialog>
     </main>
     {{{aside}}}
     <script type="module">
         import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm';
+        import utc from "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/utc/+esm"
 
         const generateElm = document.getElementById('generate')
         const generateDialogElm = document.getElementById('generate-dialog')
@@ -98,7 +99,17 @@
         document.forms[0].addEventListener('submit', function(e){
             e.preventDefault()
             const data = Object.fromEntries(new FormData(this).entries());
+            console.log(data.expireAt)
+            data.expireAt = (() => {if(data.expireAt){
+                return dayjs(data.expireAt).utc().format()
+            }})()
+            console.log(data.expireAt)
             spinner.style.display = 'flex'
+            fetchToGenerate(data)
+        })
+
+        function fetchToGenerate(data){
+            document.getElementById('errorElm').style.display = 'none'
             fetch('/admin/dashboard/api/newinputsec', {
                 method : "post",
                 headers: {
@@ -110,22 +121,22 @@
                 spinner.style.display = 'none'
             })
             .then(async res => {
-                spinner.style.display = 'none'
                 const obj = await res.json()
                 if(!obj.ok){
                     document.getElementById('errorElm').style.display = 'flex'
-                    const msg = obj.msg.includes("validation")? obj.message.split(":"): obj.message
-                    document.getElementById('errormsg').innerHTML = msg[msg.length - 1]
+                    return document.getElementById('errormsg').innerHTML = obj.msg
                 }
+                document.getElementById("code").textContent = obj.token 
+                document.getElementById("success-dialog").showModal()
+                generateDialogElm.close()
             }).catch(err => {
-                spinner.style.display = 'none'
                 document.getElementById('errorElm').style.display = 'flex'
                 document.getElementById('errormsg').innerHTML = "Terjadi Masalah Pada Server"
             })
-        })
+        }
 
         document.getElementById("copy").addEventListener('click', async function() {
-            await navigator.clipboard.writeText(document.getElementById('code-cp').textContent)
+            await navigator.clipboard.writeText(document.getElementById('code').textContent)
             this.textContent = "check"
             setTimeout(() => {
                 this.textContent = "content_copy"
@@ -133,7 +144,7 @@
         })
 
         const expireElm = document.getElementById('expire-at')
-        expireElm.setAttribute('min', dayjs().add(1, 'day').format('YYYY-MM-DD'))
+        expireElm.setAttribute('min', dayjs().add(1, 'day').format('YYYY-MM-DDTHH:mm'))
     </script>
   </body>
 </html>
