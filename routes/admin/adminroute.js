@@ -66,11 +66,12 @@ router.get('/dashboard/control', (req, res) => {
 })
 
 router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
-  const {grade, className, maxInput, expiredt} = req.body;
+  const {grade, className, maxInput, expireAt} = req.body;
+  console.log(req.body)
   const token = generateInputToken()
   try {
-    const validatedInput = InputSessionVSchema.safeParse({grade, className, maxInput, token, expireAt : new Date(expireAt).toISOString()})
-    console.log(validatedInput)
+    const validatedInput = InputSessionVSchema.safeParse({grade, className, maxInput, token, expireAt : expireAt? new Date(expireAt).toISOString(): null})
+    console.log({grade, className, maxInput, token, expireAt : expireAt? new Date(expireAt).toISOString(): null})
     if(!validatedInput.success) {
       const errorMsgArr = validatedInput.error.issues.map(e => e.message)
       return res.status(400).json({
@@ -78,8 +79,12 @@ router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
         msg : errorMsgArr.length > 1? [errorMsgArr.slice(0, errorMsgArr.length - 1).join(", ") , errorMsgArr[errorMsgArr.length - 1]].join(", dan "): errorMsgArr[0]
       })
     }
-    // InputSession.addNewSession()
-    return res.json({ok: true,token})
+    try {
+      await InputSession.addNewSession(validatedInput.data)
+      return res.json({ok: true,token})
+    } catch (error) {
+      return next(error)
+    }
   }catch (err) {
     next(err)
   }

@@ -22,21 +22,29 @@ const InputSessionSchema = new mongoose.Schema({
         default : null,
         expires : 0,
         validate : {
-            validator: v => v < new Date(),
+            validator: v => v? v > new Date(): true,
             message: props =>  `Waktu Expire Harus Dimasa Depan!`
         }
     }
 })
 
-InputSessionSchema.statics.addNewSession = async function(grade, className, token, maxInput, expireAt){
+InputSessionSchema.statics.addNewSession = async function(obj){
+    const {grade, className, token, maxInput, expireAt} = obj
     try {
         const newInputSession = await this.create({grade, className, token, maxInput, expireAt})
-        newInputSession.save()
+        return newInputSession.save()
     } catch (error) {
         throw error
     }
 }
 
+InputSessionSchema.statics.checkToken = function(token){
+    return this.findOne({token})
+}
+
+
 const InputSession = mongoose.model('InputSession', InputSessionSchema)
+
+InputSession.checkToken("")
 
 export default InputSession;

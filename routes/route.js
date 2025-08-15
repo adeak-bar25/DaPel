@@ -27,7 +27,7 @@ router.use((err, req, res, next) => {
   console.log(err);
   res.status(err.status || 500).json({
     ok: false,
-    message: err.message || 'Internal Server Error'
+    message: 'Internal Server Error'
   })
 })
 

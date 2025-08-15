@@ -21,8 +21,8 @@ export const headerHTML = `<header class="flex justify-between bg-primary/95 bac
                         </header>`
 
 export function errorElement(message) {
-    return `<div class="md:[80%] mt-4 bg-rose-200 border border-red-500 flex flex-row gap-3 items-center p-3 rounded-md mb-4 max-md:mt-3 max-md:mb-2">
-                <span class="material-symbols-rounded text-red-600">info</span>
+    return `<div class="md:w-[70%] mt-4 max-md:w-[80%] bg-rose-200 border border-red-500 flex flex-row gap-3 items-center p-3 rounded-md mb-4 max-md:mt-3 max-md:mb-2">
+                <span class="material-symbols-rounded !text-red-600">info</span>
                 <span>Terjadi Error: ${message}</span>
             </div>`
 }

@@ -103,12 +103,12 @@
             data.expireAt = (() => {if(data.expireAt){
                 return dayjs(data.expireAt).utc().format()
             }})()
-            console.log(data.expireAt)
-            spinner.style.display = 'flex'
+            console.log(data)
             fetchToGenerate(data)
         })
 
         function fetchToGenerate(data){
+            spinner.style.display = 'flex'
             document.getElementById('errorElm').style.display = 'none'
             fetch('/admin/dashboard/api/newinputsec', {
                 method : "post",

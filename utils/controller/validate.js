@@ -33,6 +33,11 @@ export const InputSessionVSchema = z.object({
         }),
     maxInput : z.coerce.number().min(1, "Max Input harus diisi"),
     expireAt: z.iso.datetime("Tanggal tidak benar")
+                .optional()
+                .nullable()
+                .transform(v => v ? new Date(v) : null)
 })
+
+export const TokenVSchema = z.coerce.number().min(100000, "Token tidak valid").max(999999, "Token tidak valid")
 
 export {ZodError}
