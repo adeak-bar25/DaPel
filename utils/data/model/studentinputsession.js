@@ -39,12 +39,9 @@ InputSessionSchema.statics.addNewSession = async function(obj){
 }
 
 InputSessionSchema.statics.checkToken = function(token){
-    return this.findOne({token})
+    return this.findOne({token : token})
 }
 
-
 const InputSession = mongoose.model('InputSession', InputSessionSchema)
-
-InputSession.checkToken("")
 
 export default InputSession;

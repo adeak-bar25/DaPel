@@ -1,10 +1,10 @@
 import Student from './model/studentmodel.js';
 import Admin from './model/adminmodel.js';
-import SessionAdmin from './model/adminsession.js';
-import InputSession from './model/inputsession.js';
+import AdminSession from './model/adminsession.js';
+import InputSession from './model/studentinputsession.js';
 
 
-export {Admin, SessionAdmin, Student, InputSession}
+export {Admin, AdminSession, Student, InputSession}
 
 export async function addAdmin(name, passwordHash){
     try {
@@ -30,7 +30,7 @@ export async function getAllStudentData(){
 
 export async function addAdminSession(adminName, sessionUUID){
     try {
-        let adminID = null
+        let adminID
         try{
             const {_id} = await getAdminInfo(adminName)
             adminID = _id
@@ -38,8 +38,8 @@ export async function addAdminSession(adminName, sessionUUID){
             if(!adminID) throw `Username "${adminName}" is trying make session, but username is not found on database`
             throw error
         }
-        const newSessionAdmin = new SessionAdmin({adminID , sessionUUID})
-        return newSessionAdmin.save()
+        const newAdminSession = new AdminSession({adminID , sessionUUID})
+        return newAdminSession.save()
     } catch (error) {
         throw error
     }

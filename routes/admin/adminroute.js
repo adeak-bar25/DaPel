@@ -1,7 +1,7 @@
 import express from 'express';
 import { renderPage, renderStudentData, getAllStudentData } from './../route.js';
-import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken } from '../../utils/controller/auth.js';
-import { SessionAdmin, Admin, InputSession } from '../../utils/data/data.js';
+import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken, cookieLogin } from '../../utils/controller/auth.js';
+import { AdminSession, Admin, InputSession } from '../../utils/data/data.js';
 import { ZodError, StudentVSchema, InputSessionVSchema } from './../../utils/controller/validate.js'
 
 const router = express.Router();
@@ -45,16 +45,29 @@ router.post('/new', async (req, res) => {
   res.status(303).redirect('/admin/dashboard');
 })
 
-router.use('/dashboard/', (req, res, next) => {
+router.use('/dashboard/', async (req, res, next) => {
+  const uuid = req.cookies.loginDapelSes
+  if(!uuid) return res.status(401).redirect('/admin/login')
+  const session = await cookieLogin(uuid)
+  if(!session.isValid) return res.status(401).redirect('/admin/login')
+  if(!req.cookies.tempSession) session.setSessionCookie(res).increaseCookieTime(res)
   next()
 })
 
-router.get('/dashboard', async (req, res) => {
-  renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await SessionAdmin.lastBeforeLatestLogin()})
+router.get('/dashboard', async (req, res, next) => {
+  try {
+    renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await AdminSession.lastBeforeLatestLogin()})
+  } catch (error) {
+    next(error)
+  }
 })
 
 router.get('/dashboard/data', async (req, res) => {
-  renderPage(res, 'dashboarddata', 'Data - Dashboard Admin', {studentData : renderStudentData(await getAllStudentData())} )
+  try {
+    renderPage(res, 'dashboarddata', 'Data - Dashboard Admin', {studentData : renderStudentData(await getAllStudentData())} )
+  } catch (error) {
+    next(error)
+  }
 })
 
 router.get('/dashboard/options', (req, res) => {
