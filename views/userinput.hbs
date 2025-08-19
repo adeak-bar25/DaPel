@@ -16,14 +16,22 @@
             <label for="name">Nama</label>
             <input type="text" name="name" id="name" placeholder="Masukkan nama anda" required>
             <label for="class">Kelas</label>
-            <input disabled value="X TJKT 1" type="text" class="bg-gray-200" id="class">
+            <input disabled value="{{classname}}" type="text" class="bg-gray-200" id="class">
             <label for="nisn">NISN</label>
             <input type="number" id="nisn" name="nisn" placeholder="Masukkan nisn anda" required>
-            <label for="gender">Jenis Kelamin</label>
-            <select class="block" name="gender" id="gender" required>
-              <option value="man">Laki-laki</option>
-              <option value="woman">Perempuan</option>
-            </select>
+            <div class="flex gap-3 w-[90%]">
+              <fieldset>
+                <label for="age">Umur</label>
+                <input type="number" id="age" name="age" placeholder="Masukkan umur anda">
+              </fieldset>
+              <fieldset>
+                <label for="gender">Jenis Kelamin</label>
+                <select class="block border-2 px-1 py-1.5 rounded-sm border-gray-800/60" name="gender" id="gender" required>
+                  <option value="man">Laki-laki</option>
+                  <option value="woman">Perempuan</option>
+                </select>
+              </fieldset>
+            </div>
             <label for="email">Email</label>
             <input type="email" name="email" placeholder="Masukkan email anda" id="email" required>
             <label for="phone">No.Telpon</label>

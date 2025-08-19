@@ -31,8 +31,7 @@ const InputSessionSchema = new mongoose.Schema({
 InputSessionSchema.statics.addNewSession = async function(obj){
     const {grade, className, token, maxInput, expireAt} = obj
     try {
-        const newInputSession = await this.create({grade, className, token, maxInput, expireAt})
-        return newInputSession.save()
+        return await this.create({grade, className, token, maxInput, expireAt})
     } catch (error) {
         throw error
     }

@@ -1,7 +1,7 @@
 import mongoose from'mongoose';
 import validator from "validator";
 
-const studentSchema = new mongoose.Schema({
+const StudentSchema = new mongoose.Schema({
     name : {
         type : String,
         required : true,
@@ -17,7 +17,7 @@ const studentSchema = new mongoose.Schema({
         min : 10,
         max : 12
     },
-    class: {
+    className: {
         type : String,
         require : true,
         uppercase: true,
@@ -63,6 +63,16 @@ function capitalizeName(name){
     return name.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
 }
 
-const Student = mongoose.model('Student',studentSchema )
+StudentSchema.statics.insertStudent = async function(studentData) {
+    const {name, nisn, grade, className, age, phone, gender, email} = studentData;
+    try {
+        const newStudent = this.create({name, nisn, grade, className, age, phone, gender, email})
+        return newStudent.save()
+    } catch (error) {
+        throw error
+    }
+}
+
+const Student = mongoose.model('Student',StudentSchema )
 
 export default Student

@@ -3,22 +3,23 @@ import validator from 'validator';
 
 export const StudentVSchema = z.object({
     name : z.string().min(3, "Nama harus minimal 3 karakter"),
-    grade : z.coerce.number()
-        .min(10, "Kelas tidak boleh kurang dari 10")
-        .max(12, "Kelas tidak boleh lebih dari 12"),
-    class : z.string({
-        required_error: "Nama wajib diisi",
-    }).min(1, "Nama wajib diisi"),
+    nisn : z.coerce.string()
+        .min(10, "NISN harus 10 digit")
+        .max(10, "NISN harus 10 digit")
+        .refine(val => validator.isNumeric(val), {
+            error : "NISN hanya boleh diisi angka"
+        }),
     age : z.coerce.number()
         .min(13, "Umur tidak boleh kurang dari 13")
         .max(24, "Umur tidak boleh lebih dari 24"),
-    phone : z.string().refine(val => validator.isMobilePhone( val ,"id-ID"), {
-        error : "Nomor Telpon tidak valid"
-    }),
+
     gender : z.enum(["man", "woman"]).refine(v => ["man", "woman"].includes(v), {
         error : "Jenis Kelamin hanya boleh diisi laki-laki atau perempuan"
     }),
-    email : z.email("Email wajib diisi")
+    email : z.email("Email wajib diisi"),
+    phone : z.string().refine(val => validator.isMobilePhone( val ,"id-ID"), {
+        error : "Nomor Telpon tidak valid"
+    })
 })
 
 export const InputSessionVSchema = z.object({
