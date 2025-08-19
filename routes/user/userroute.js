@@ -18,7 +18,6 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
   res.clearCookie('token')
-  console.log(req.body);
   const validatedToken = TokenVSchema.safeParse(req.body.token)
   const tokenInfo = await InputSession.checkToken(validatedToken.data)
   if(!tokenInfo) return res.status(400).redirect('/user/login?e=wrong')
@@ -30,26 +29,18 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/input', async (req, res, next) => {
-  const validatedToken = TokenVSchema.safeParse(req.cookies.token)
-  if(!req.query.e && !validatedToken.success) return ;
-  if(!validatedToken.success) return res.status(400).redirect('/user/login?e=inval');
-  const tokenInfo = await InputSession.checkToken(validatedToken.data)
-  if(!tokenInfo) return res.status(400).redirect('/user/login?e=wrong');
+  validateAndGetTokenCookie(req, res)
   renderPage(res, "userinput", "Masukkan Data Anda", {classname : [tokenInfo.grade, tokenInfo.className].join('-')});
 })
 
 router.post('/input', async (req, res, next) => {
-  const validatedToken = TokenVSchema.safeParse(req.cookies.token)
-  if(!validatedToken.success) return res.status(400).redirect('/user/login?e=inval');
-  const tokenInfo = await InputSession.checkToken(validatedToken.data)
-  if(!tokenInfo) return res.status(400).redirect('/user/login?e=wrong');
+  validateAndGetTokenCookie(req, res)
+
   const validatedInput = StudentVSchema.safeParse(req.body)
   if(!validatedInput.success) return res.status(400).redirect('/user/input?e=inval');
 
-  const fObj = Object.assign({grade : tokenInfo.grade, className : tokenInfo.className}, validatedInput.data)
-
   try {
-    await Student.insertStudent(fObj);
+    await Student.insertStudent(Object.assign({grade : tokenInfo.grade, className : tokenInfo.className}, validatedInput.data));
     res.status(303).send("Data berhasil disimpan, silahkan tunggu konfirmasi dari admin");
   } catch (error) {
     next(error);
