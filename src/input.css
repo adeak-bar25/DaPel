@@ -60,7 +60,6 @@
   p {
     font-size: calc(0.9rem + 0.25vw + 0.25vh);
   }
-
   .sm-p{
     font-size: calc(0.7rem + 0.15vw + 0.25vh);
   }
@@ -86,7 +85,6 @@
     -webkit-appearance: none;
     margin: 0;
   }
-
   /* Firefox */
   input[type=number] {
     -moz-appearance: textfield;
@@ -112,7 +110,6 @@
       "opsz" 24;
       @apply text-violet-800;
   }
-
   .material-symbols-rounded:hover, .no-hoef{
     font-variation-settings:
       "FILL" 0,

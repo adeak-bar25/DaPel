@@ -99,11 +99,9 @@
         document.forms[0].addEventListener('submit', function(e){
             e.preventDefault()
             const data = Object.fromEntries(new FormData(this).entries());
-            console.log(data.expireAt)
             data.expireAt = (() => {if(data.expireAt){
                 return dayjs(data.expireAt).utc().format()
             }})()
-            console.log(data)
             fetchToGenerate(data)
         })
 

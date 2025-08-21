@@ -7,18 +7,30 @@
     {{{headerHTML}}}
     <main class="below-header pl-3 pr-2 pt-3 md:px-6 md:pt-5">
       <h1>Data Siswa</h1>
+      <p class="my-2">Disini anda dapat melihat data yang dimasukkan</p>
         <h2>Table Data Siswa</h2>
         <div class="overflow-x-auto">
-          <table class="w-full text-lg table-auto border-collapse border border-slate-400 text-left [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
+          <table class="w-full text-lg border-collapse border border-slate-400 text-left [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
+            <colgroup>
+              <col class="w-4" />
+              <col class="w-[1%] whitespace-nowrap" />
+              <col class="w-[1%] whitespace-nowrap" />
+              <col/>
+              <col />
+              <col />
+              <col />
+              <col class="w-[1%] whitespace-nowrap" />
+            </colgroup>
             <thead>
               <tr>
-                <th class="w-8">No</th>
+                <th>No</th>
                 <th>Kelas</th>
                 <th>Nisn</th>
                 <th>Nama</th>
                 <th>Umur</th>
                 <th>Email</th>
                 <th>No. Telpon</th>
+                <th>Opsi</th>
               </tr>
             </thead>
             <tbody class="[&_td]:text-lg">
@@ -28,6 +40,49 @@
         </div>
       </section>
     </main>
+    <dialog closedby="any" id="dialog" class="fixed z-50 p-4 bg-white backdrop:bg-black/35 outline-0 m-auto">
+      <div class="font-bold">
+        Hapus Data Siswa
+      </div>
+      <p>Apakah anda ingin menghapus <span id="dialog-name"></span> dari data?</p>
+      <div class="flex justify-end gap-4 mt-3 mb-1.5 [&>button]:block [&>button]:select-none [&>button]:cursor-pointer">
+        <button class="hover:underline" id="close-dialog">Batal</button>
+        <button id="delete-btn" class="bg-red-500 rounded-[3px] text-white p-1.5">Hapus</button>
+      </div>
+    </dialog>
     {{{aside}}}
+    <script>
+      const dialog = document.getElementById('dialog')
+      const dialogText = document.getElementById('dialog-name')
+      const closeDialog = document.getElementById('close-dialog')
+      const deleteBtn = document.getElementById('delete-btn')
+
+      document.querySelectorAll('.del-btn').forEach((elm) => {
+          elm.addEventListener('click', function(e) {
+            dialog.showModal()
+            dialogText.textContent = this.dataset.name
+            deleteBtn.addEventListener('click', (e) => {
+              sendDeleteReq(this.dataset.id)
+            })
+            
+          })
+      })
+
+      function sendDeleteReq(id){
+        fetch('/admin/dashboard/api/delete/student',
+          {
+            method : "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body : JSON.stringify({id})
+          }
+        )
+      }
+
+      closeDialog.addEventListener('click', () => {
+        dialog.close()
+      })
+    </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { set } from "mongoose";
 
 const InputSessionSchema = new mongoose.Schema({
     grade : {
@@ -16,6 +16,10 @@ const InputSessionSchema = new mongoose.Schema({
     maxInput : {
         type : Number,
         required : [true, "Jumlah Maksimal Input Tidak Boleh Kosong!"]
+    },
+    currentInput : {
+        type : Number,
+        default : 0
     },
     expireAt: {
         type : Date,
@@ -37,8 +41,18 @@ InputSessionSchema.statics.addNewSession = async function(obj){
     }
 }
 
+InputSessionSchema.statics.updateCurrent = function(token){
+    return this.updateOne({token}, {$inc : {currentInput : 1}})
+}
+
 InputSessionSchema.statics.checkToken = function(token){
     return this.findOne({token : token})
+}
+
+InputSessionSchema.statics.inputAvailable = async function(token){
+    const tokenInfo = await this.findOne({token : token})
+    if(!tokenInfo) return null
+    return tokenInfo.currentInput < tokenInfo.maxInput
 }
 
 const InputSession = mongoose.model('InputSession', InputSessionSchema)

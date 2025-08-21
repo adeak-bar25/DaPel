@@ -1,13 +1,26 @@
 import { z, ZodError } from "zod"
 import validator from 'validator';
+import Student from '../data/model/studentmodel.js';
+import { InputSession } from "../data/data.js";
 
 export const StudentVSchema = z.object({
     name : z.string().min(3, "Nama harus minimal 3 karakter"),
     nisn : z.coerce.string()
         .min(10, "NISN harus 10 digit")
         .max(10, "NISN harus 10 digit")
-        .refine(val => validator.isNumeric(val), {
-            error : "NISN hanya boleh diisi angka"
+        .superRefine(async(val, ctx) => {
+            if(!validator.isNumeric(val)){
+                ctx.addIssue({
+                    code : "custom",
+                    message : "NISN harus berupa angka"
+                })
+            }
+            if(await Student.isDuplicate(val)){
+                ctx.addIssue({
+                    code : "custom",
+                    message : "NISN sudah terdaftar"
+                })
+            }
         }),
     age : z.coerce.number()
         .min(13, "Umur tidak boleh kurang dari 13")
@@ -39,6 +52,24 @@ export const InputSessionVSchema = z.object({
                 .transform(v => v ? new Date(v) : null)
 })
 
-export const TokenVSchema = z.coerce.number().min(100000, "Token tidak valid").max(999999, "Token tidak valid")
+export const TokenVSchema = z.coerce.number()
+                .min(100000, "Token tidak valid")
+                .max(999999, "Token tidak valid")
+                .superRefine(async(val, ctx) => {
+                    const b = await InputSession.inputAvailable(val)
+                    if(b === null){
+                        ctx.addIssue({
+                            code : "custom",
+                            message : "Token tidak valid"
+                        })
+                    }
+                    
+                    if(b === false){
+                        ctx.addIssue({
+                            code : "expired",
+                            message : "Kuota input telah habis, silahkan hubungi admin"
+                        })
+                    }
+                })
 
 export {ZodError}

@@ -39,11 +39,12 @@ export function dashboardAsideElement(file){
 export function tableRow(studentObj, index) { 
     return `<tr>
                 <td>${index}</td>
-                <td>${[studentObj.grade, studentObj.class].join(' ')}</td>
-                <td>${studentObj.nisn}</td>
+                <td class="w-[1%] whitespace-nowrap">${[studentObj.grade, studentObj.className].join('-')}</td>
+                <td class="!pr-5">${studentObj.nisn}</td>
                 <td>${studentObj.name}</td>
-                <td>${studentObj.age}</td>
+                <td class="w-[1%] whitespace-nowrap">${studentObj.age}</td>
                 <td>${studentObj.email}</td>
                 <td>${studentObj.phone}</td>
+                <td class="w-fit"><button data-id="${studentObj.id}" data-name="${studentObj.name}" class="bg-red-500 rounded-3xl text-white py-1 px-2.5 w-fit block mx-auto whitespace-nowrap cursor-pointer select-none del-btn">Hapus Data</button></td>
             </tr>`
 }

@@ -9,7 +9,6 @@ dayjs.extend(timezone);
 dayjs.extend(advancedFormat);
 
 
-console.log(dayjs().locale('id').format('dddd, D MMMM YYYY'));
 
 const brand = document.querySelector('div.brand')
 

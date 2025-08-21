@@ -80,11 +80,9 @@ router.get('/dashboard/control', (req, res) => {
 
 router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
   const {grade, className, maxInput, expireAt} = req.body;
-  console.log(req.body)
   const token = generateInputToken()
   try {
     const validatedInput = InputSessionVSchema.safeParse({grade, className, maxInput, token, expireAt : expireAt? new Date(expireAt).toISOString(): null})
-    console.log({grade, className, maxInput, token, expireAt : expireAt? new Date(expireAt).toISOString(): null})
     if(!validatedInput.success) {
       const errorMsgArr = validatedInput.error.issues.map(e => e.message)
       return res.status(400).json({
@@ -101,6 +99,11 @@ router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
   }catch (err) {
     next(err)
   }
+})
+
+router.delete('/dashboard/api/delete/student', async (req, res, next) => {
+  const {id} = req.body
+  console.log(id)
 })
 
 export default router;

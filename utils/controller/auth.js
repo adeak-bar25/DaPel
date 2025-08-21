@@ -2,6 +2,8 @@ import { getAdminInfo, addAdmin, addAdminSession, InputSession, AdminSession } f
 import { saltRounds, storeTimeCookieSec } from '../config.js'
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import {TokenVSchema} from './validate.js';
+import { object } from "zod";
 
 // console.log("Salt",saltRounds)
 
@@ -48,7 +50,6 @@ export async function cookieLogin(uuid){
                 httpOnly: true,
                 sameSite: "Strict"
             })
-            console.log("cookie is up")
             return this
         }
         async increaseCookieTime(res){
@@ -63,6 +64,12 @@ export async function cookieLogin(uuid){
     }
 
     return new Cookie(uuid)
+}
+
+export async function validateAndGetTokenCookie(req, res){
+    const vToken = await TokenVSchema.safeParseAsync(req.cookies.token)
+    if(!vToken.success) return res.status(400).redirect('/user/login?e=inval')
+    return await InputSession.checkToken(vToken.data)
 }
 
 function hashPassword(password){

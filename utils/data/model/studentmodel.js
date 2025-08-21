@@ -1,5 +1,6 @@
 import mongoose from'mongoose';
 import validator from "validator";
+import { InputSession } from '../data.js';
 
 const StudentSchema = new mongoose.Schema({
     name : {
@@ -63,16 +64,25 @@ function capitalizeName(name){
     return name.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
 }
 
+StudentSchema.statics.isDuplicate = async function(nisn){
+    if(await this.findOne({nisn})) return true
+    return false
+}
+
 StudentSchema.statics.insertStudent = async function(studentData) {
-    const {name, nisn, grade, className, age, phone, gender, email} = studentData;
+    const {name, nisn, grade, className, age, phone, gender, email, token} = studentData;
+    if(!await InputSession.inputAvailable(token)) return "Kuota input telah habis, silahkan hubungi admin"
+
     try {
-        const newStudent = this.create({name, nisn, grade, className, age, phone, gender, email})
-        return newStudent.save()
+        this.create({name, nisn, grade, className, age, phone, gender, email})
+        await InputSession.updateCurrent(token)
+        return "Success"
     } catch (error) {
         throw error
     }
 }
 
 const Student = mongoose.model('Student',StudentSchema )
+
 
 export default Student
