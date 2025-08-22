@@ -65,6 +65,7 @@ if(aside){
     resize()
     await document.fonts.ready
     resize()
+    document.querySelector(":root").style.setProperty("--aside-width", getComputedStyle(aside)['width'])
     window.addEventListener('resize', () => {
         setTimeout(() => {
             resize()

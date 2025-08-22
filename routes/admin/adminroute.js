@@ -1,7 +1,7 @@
 import express from 'express';
 import { renderPage, renderStudentData, getAllStudentData } from './../route.js';
 import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken, cookieLogin } from '../../utils/controller/auth.js';
-import { AdminSession, Admin, InputSession } from '../../utils/data/data.js';
+import { AdminSession, Admin, InputSession, Student } from '../../utils/data/data.js';
 import { ZodError, StudentVSchema, InputSessionVSchema } from './../../utils/controller/validate.js'
 
 const router = express.Router();
@@ -102,8 +102,16 @@ router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
 })
 
 router.delete('/dashboard/api/delete/student', async (req, res, next) => {
-  const {id} = req.body
-  console.log(id)
+  console.log('hit delete student route')
+  if(!req.body.id) {
+    return res.status(400).json({ok: false, msg: "ID tidak boleh kosong!"})
+  }
+  try{
+    await Student.deleteStudent(req.body.id)
+    res.json({ok: true, msg: "Data siswa berhasil dihapus!"})
+  }catch (err) {
+    next(err)
+  }
 })
 
 export default router;

@@ -82,6 +82,14 @@ StudentSchema.statics.insertStudent = async function(studentData) {
     }
 }
 
+StudentSchema.statics.deleteStudent = async function(id){
+    try {
+        await this.deleteOne({_id: id})
+    } catch (error) {
+        throw error
+    }
+}
+
 const Student = mongoose.model('Student',StudentSchema )
 
 

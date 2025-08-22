@@ -3,7 +3,7 @@
   <head>
     {{{head}}}
   </head>
-  <body class="bg-slate-50">
+  <body class="bg-slate-50 min-h-dvh">
     {{{headerHTML}}}
     <main class="below-header pl-3 pr-2 pt-3 md:px-6 md:pt-5">
       <h1>Data Siswa</h1>
@@ -50,6 +50,10 @@
         <button id="delete-btn" class="bg-red-500 rounded-[3px] text-white p-1.5">Hapus</button>
       </div>
     </dialog>
+    <div id="toast" class="flex gap-6 fixed p-2 rounded-sm left-[calc(var(--aside-width)+1rem)] bottom-4 border border-violet-300/30 bg-violet-50 drop-shadow-lg">
+        <div id="toast-msg">test</div>
+        <button id="close-toast" class="text-violet-500 pr-2 cursor-pointer select-none">Ok</button>
+    </div>
     {{{aside}}}
     <script>
       const dialog = document.getElementById('dialog')
@@ -57,19 +61,41 @@
       const closeDialog = document.getElementById('close-dialog')
       const deleteBtn = document.getElementById('delete-btn')
 
+      const toast = document.getElementById('toast')
+      const toastMsg = document.getElementById('toast-msg')
+
+      document.getElementById('close-toast').onclick = () => toast.style.display = 'none'
+      toast.style.display = 'none'
+      
+
       document.querySelectorAll('.del-btn').forEach((elm) => {
           elm.addEventListener('click', function(e) {
             dialog.showModal()
             dialogText.textContent = this.dataset.name
-            deleteBtn.addEventListener('click', (e) => {
-              sendDeleteReq(this.dataset.id)
+            deleteBtn.addEventListener('click', async(e) => {
+              try{
+                const res = await sendDeleteReq(this.dataset.id)
+                dialog.close()
+                console.log(res)
+                toast.style.display = 'flex'
+                toastMsg.textContent = res.msg
+                setTimeout(() => {
+                  toast.style.display = 'none'
+                }, 3000)
+                this.closest('tr').remove()
+              }catch(err){
+                console.log(err)
+              }
+              
             })
             
           })
       })
 
-      function sendDeleteReq(id){
-        fetch('/admin/dashboard/api/delete/student',
+      
+
+      async function sendDeleteReq(id){
+        const data = await fetch('/admin/dashboard/api/delete/student',
           {
             method : "DELETE",
             headers: {
@@ -78,6 +104,10 @@
             body : JSON.stringify({id})
           }
         )
+        if (!data.ok) {
+          throw new Error(`Delete failed: ${res.status} ${res.statusText}`);
+        }
+        return await data.json()
       }
 
       closeDialog.addEventListener('click', () => {
