@@ -9,16 +9,108 @@
       <h1>Pengaturan</h1>
       <section class="my-4">
         <h3>Akun Anda</h3>
-        <div>
-          <h4>Ganti Password Anda</h4>
-          <p class="sm-p">Ganti password admin anda saat ini!</p>
-        </div>
-        <div>
-          <h4></h4>
-        </div>
+        <section tabindex="0" id="password-setting" class="-mx-3 my-4 flex items-center justify-between group bg-violet-50 hover:bg-violet-400/20 p-4 rounded-md cursor-pointer">
+          <div>
+              <h4 class="font-bold">Ganti Password Anda</h4>
+              <p class="sm-p">Ganti password admin anda saat ini!</p>
+          </div>
+          <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
+        </section>
       </section>
-      
     </main>
+    <dialog closedby="any" id="password-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md md:w-[400px]">
+      <div class="text-xl font-bold">Password</div>
+      <div class="mt-2">Ubah password anda!</div>
+      <form id="password-form" class="mt-4 [&_label]:!text-lg [&_input]:w-[95%]">
+        <label for="old-password" class="block mb-1">Password Lama</label>
+        <div class="flex items-center gap-2">
+          <input type="password" id="old-password" name="old-password" class="border border-slate-300 rounded-md" required />
+          <div class="material-symbols-rounded show-pws">visibility</div>
+        </div>
+        <label for="new-password" class="block mb-1">Password Baru</label>
+        <div class="flex items-center gap-2">
+          <input type="password" id="new-password" name="new-password" class="border border-slate-300 rounded-md" required />
+          <div class="material-symbols-rounded show-pws">visibility</div>
+        </div>
+        <label for="confirm-password" class="block mt-3 mb-1">Konfirmasi Password Baru</label>
+        <div class="flex items-center gap-2">
+          <input type="password" id="confirm-password" name="confirm-password" class="border border-slate-300 rounded-md" required />
+          <div class="material-symbols-rounded show-pws">visibility</div>
+        </div>
+        <div class="flex justify-end gap-4 mt-5 mb-1.5 [&>button]:block [&>button]:select-none [&>button]:cursor-pointer">
+          <button type="button" class="hover:underline" id="close-dialog">Batal</button>
+          <button disabled type="submit" id="input-btn" class="bg-violet-500 disabled:cursor-not-allowed disabled:opacity-70 rounded-[3px] text-white p-1.5">Simpan</button>
+        </div>
+      </form>
+    </dialog>
+    <script>
+      const dialog = document.getElementById('password-dialog')
+      const passwordSetting = document.getElementById('password-setting')
+      dialog.showModal()
+
+      passwordSetting.addEventListener('click', () => {
+        dialog.showModal()
+      })
+
+      document.getElementById('close-dialog').onclick = () => dialog.close()
+
+      document.getElementById('password-form').addEventListener('submit', async (e) => {
+        e.preventDefault()
+        sendPassword(e.target)
+      })
+
+      document.querySelectorAll('.show-pws').forEach(elm => {
+        elm.addEventListener('click', function() {
+          const input = this.previousElementSibling
+          if (input.type === 'password') {
+            input.type = 'text'
+            this.textContent = 'visibility_off'
+          } else {
+            input.type = 'password'
+            this.textContent = 'visibility'
+          }
+        })
+      })
+
+      const oldPassword = document.getElementById('old-password')
+      const newPassword = document.getElementById('new-password')
+      const confirmPassword = document.getElementById('confirm-password')
+      const sendBtn = document.getElementById("input-btn")
+
+      confirmPassword.addEventListener('input', () => {
+        if (newPassword.value !== confirmPassword.value) {
+          console.log("Passwords do not match")
+          sendBtn.disabled = true
+        }else{
+          console.log("Passwords match")
+          sendBtn.disabled = false
+        }
+      });
+
+      newPassword.addEventListener('input', () => {
+        if (newPassword.value !== confirmPassword.value) {
+          console.log("Passwords do not match")
+          sendBtn.disabled = true
+        }else{
+          console.log("Passwords match")
+          sendBtn.disabled = false
+        }
+      });
+
+      function sendPassword(formElm) {
+        const formData = new FormData(formElm)
+        const data = Object.fromEntries(formData.entries())
+        
+        return fetch('/admin/dashboard/api/update/password', {
+          method: 'PUT',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      }
+
+    </script>
     {{{aside}}}
   </body>
 </html>

@@ -114,4 +114,8 @@ router.delete('/dashboard/api/delete/student', async (req, res, next) => {
   }
 })
 
+router.put('/dashboard/api/update/password', async (req, res, next) => {
+  console.log(req.body)
+})
+
 export default router;
