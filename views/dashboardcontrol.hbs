@@ -15,6 +15,13 @@
         </div>
         <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
       </section>
+      <section onclick="document.getElementById('dialog-history').showModal()" tabindex="0" id="history" class="-mx-3 my-4 flex items-center justify-between group bg-violet-50 hover:bg-violet-400/20 p-4 rounded-md cursor-pointer">
+        <div>
+            <h4 class="font-bold">Lihat History Token</h4>
+            <p class="sm-p">Lihat token yang sudah dibuat sebelumnya </p>
+        </div>
+        <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
+      </section>
 
         <dialog closedby="any" id="generate-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md md:max-w-150">
             <div class="flex justify-between items-center mb-3 gap-8 border-b border-b-slate-950 pb-2">
@@ -30,7 +37,7 @@
                     <p>Error : <span id="errormsg" class="break-words"></span></p>
                 </div>
                 <div class="mb-3 flex gap-7 justify-center">
-                    <fieldset>
+                    {{!-- <fieldset>
                         <label for="class">Kelas</label>
                         <input class="w-10 text-center" type="number" name="grade" id="class">
                     </fieldset>
@@ -38,7 +45,7 @@
                         <label for="className">Nama Kelas</label>
                         <input type="text" name="className" id="classname">
                     </fieldset>
-                    <div class="sep-y border-slate-700 h-20"></div>
+                    <div class="sep-y border-slate-700 h-20"></div> --}}
                     <fieldset>
                         <label for="maxinput">Max Input</label>
                         <input class="w-15" type="number" name="maxInput" id="maxinput"></label>
@@ -76,11 +83,22 @@
                 <button class="btn-primary block mt-4 close-dialog">Ok</button>
             </div>
         </dialog>
+
+        <dialog id="dialog-history" class="fixed m-auto backdrop:bg-black/35 bg-white p-4 rounded-md md:max-w-150">
+            <h3 class="font-bold">History Token</h3>
+            <div class="mr-5">
+                <p>Fitur ini belum tersedia</p>
+            </div>
+            <button class="close-dialog">Close</button>
+        </dialog>
     </main>
     {{{aside}}}
     <script type="module">
         import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm';
         import utc from "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/utc/+esm"
+
+        document.getElementById("dialog-history").showModal()
+
 
         const generateElm = document.getElementById('generate')
         const generateDialogElm = document.getElementById('generate-dialog')
@@ -90,7 +108,7 @@
 
         document.querySelectorAll('.close-dialog').forEach((elm) => {
             elm.addEventListener('click', () => {
-                elm.parentElement.parentElement.close()
+                elm.closest('dialog').close()
             })
         })
 

@@ -60,6 +60,14 @@ const StudentSchema = new mongoose.Schema({
     }
 })
 
+class Data{
+    constructor(){
+        createAt = () => Date.now()
+        updateAt = () => Date.now()
+    }
+
+}
+
 function capitalizeName(name){
     return name.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
 }
@@ -67,6 +75,11 @@ function capitalizeName(name){
 StudentSchema.statics.isDuplicate = async function(nisn){
     if(await this.findOne({nisn})) return true
     return false
+}
+
+StudentSchema.statics.getlastUpdated = async function(){
+    const [latest] = await this.find().sort({updateAt : -1}).limit(1).select("updateAt -_id").exec()
+    return latest
 }
 
 StudentSchema.statics.insertStudent = async function(studentData) {
@@ -92,5 +105,6 @@ StudentSchema.statics.deleteStudent = async function(id){
 
 const Student = mongoose.model('Student',StudentSchema )
 
-
 export default Student
+
+

@@ -2,6 +2,47 @@ import { z, ZodError } from "zod"
 import validator from 'validator';
 import Student from '../data/model/studentmodel.js';
 import { InputSession } from "../data/data.js";
+import { is } from "zod/locales";
+
+export function generateVSchema(fields){
+
+    const shape ={}
+    fields.forEach(field => {
+        let base
+        switch(field.type){
+            case "string":
+                base = z.string(`${field.fieldName} wajib diisi`)
+                if(field.minLength){
+                    base = base.min(field.minLength, `${field.fieldName} harus minimal ${field.minLength} karakter`)
+                }
+                break;
+            case "email":
+                base = z.email(`${field.fieldName} wajib diisi`)
+                break;
+            case "phone":
+                base = z.string(`${field.fieldName} wajib diisi`).refine(val => validator.isMobilePhone( val ,"id-ID"), {
+                    error : `${field.fieldName} tidak valid`
+                })
+                break;
+            case "number":
+                base = z.number(`${field.fieldName} wajib diisi`)
+                break;
+            case "date":
+                base = z.date(`${field.fieldName} wajib diisi`)
+                break;
+            case "enum":
+                base = z.enum(field.options, `${field.fieldName} wajib diisi`)
+                break;
+            default:
+                base = z.any(`${field.fieldName} wajib diisi`)
+        }
+        base = field.isRequired? base : base.optional().nullable()
+        shape[field.fieldName] = base
+    })
+    return z.object({
+        ...shape
+    })
+}
 
 export const StudentVSchema = z.object({
     name : z.string().min(3, "Nama harus minimal 3 karakter"),

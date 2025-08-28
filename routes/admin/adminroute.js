@@ -1,6 +1,6 @@
 import express from 'express';
 import { renderPage, renderStudentData, getAllStudentData } from './../route.js';
-import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken, cookieLogin } from '../../utils/controller/auth.js';
+import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken, cookieLogin, changePassword } from '../../utils/controller/auth.js';
 import { AdminSession, Admin, InputSession, Student } from '../../utils/data/data.js';
 import { ZodError, StudentVSchema, InputSessionVSchema } from './../../utils/controller/validate.js'
 
@@ -56,7 +56,7 @@ router.use('/dashboard/', async (req, res, next) => {
 
 router.get('/dashboard', async (req, res, next) => {
   try {
-    renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await AdminSession.lastBeforeLatestLogin()})
+    renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await AdminSession.lastBeforeLatestLogin(), lastInput : await Student.getlastUpdated()} )
   } catch (error) {
     next(error)
   }
@@ -102,7 +102,6 @@ router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
 })
 
 router.delete('/dashboard/api/delete/student', async (req, res, next) => {
-  console.log('hit delete student route')
   if(!req.body.id) {
     return res.status(400).json({ok: false, msg: "ID tidak boleh kosong!"})
   }
@@ -115,7 +114,18 @@ router.delete('/dashboard/api/delete/student', async (req, res, next) => {
 })
 
 router.put('/dashboard/api/update/password', async (req, res, next) => {
-  console.log(req.body)
+  const {["loginDapelSes"] : sessionUUID, oldPassword, newPassword} = Object.assign(req.cookies, req.body);
+  // console.log(oldPassword, newPassword, sessionUUID);
+  if(!oldPassword || !newPassword){
+    return res.status(400).json({ok: false, msg: "Password lama dan baru harus diisi!"})
+  }
+  try {
+    await changePassword(sessionUUID, oldPassword, newPassword)
+    return res.json({ok: true, msg: "Password berhasil diubah!"})
+  } catch (error) {
+    if(error.message === "Password lama salah") return res.status(400).json({ok: false, msg: error.message})
+    next(error)
+  }
 })
 
 export default router;

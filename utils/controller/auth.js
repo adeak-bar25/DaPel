@@ -1,4 +1,4 @@
-import { getAdminInfo, addAdmin, addAdminSession, InputSession, AdminSession } from "../data/data.js";
+import { getAdminInfo, addAdmin, addAdminSession, InputSession, AdminSession, Admin } from "../data/data.js";
 import { saltRounds, storeTimeCookieSec } from '../config.js'
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -33,6 +33,16 @@ export async function createNewAdminSession(adminName, res){
         httpOnly: true,
         sameSite: "Strict"
     })
+}
+
+export async function changePassword(sessionId, oldPassword, newPassword){
+    const {adminID} = await AdminSession.getAdminID(sessionId)
+    const {["passwordHash"]: oldHash} = await Admin.getHashByid(adminID)
+    
+    if(!await bcrypt.compare(oldPassword, oldHash)) throw new Error("Password lama salah")
+
+    const newHash = await hashPassword(newPassword)
+    return await Admin.changePasswordHashById(adminID, newHash)
 }
 
 export async function cookieLogin(uuid){

@@ -21,42 +21,63 @@
     <dialog closedby="any" id="password-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md md:w-[400px]">
       <div class="text-xl font-bold">Password</div>
       <div class="mt-2">Ubah password anda!</div>
+      <div id="error-elm" class="!hidden bg-red-200/50 p-2 gap-3 rounded-sm flex">
+        <div class="material-symbols-rounded fill !text-red-600">warning</div>
+        <p class="sm-p" id="text"></p>
+      </div>
       <form id="password-form" class="mt-4 [&_label]:!text-lg [&_input]:w-[95%]">
         <label for="old-password" class="block mb-1">Password Lama</label>
         <div class="flex items-center gap-2">
-          <input type="password" id="old-password" name="old-password" class="border border-slate-300 rounded-md" required />
+          <input type="password" id="old-password" name="oldPassword" class="border border-slate-300 rounded-md" required />
           <div class="material-symbols-rounded show-pws">visibility</div>
         </div>
         <label for="new-password" class="block mb-1">Password Baru</label>
         <div class="flex items-center gap-2">
-          <input type="password" id="new-password" name="new-password" class="border border-slate-300 rounded-md" required />
+          <input type="password" id="new-password" name="newPassword" class="border border-slate-300 rounded-md" required />
           <div class="material-symbols-rounded show-pws">visibility</div>
         </div>
         <label for="confirm-password" class="block mt-3 mb-1">Konfirmasi Password Baru</label>
         <div class="flex items-center gap-2">
-          <input type="password" id="confirm-password" name="confirm-password" class="border border-slate-300 rounded-md" required />
+          <input type="password" id="confirm-password" class="border border-slate-300 rounded-md" required />
           <div class="material-symbols-rounded show-pws">visibility</div>
         </div>
         <div class="flex justify-end gap-4 mt-5 mb-1.5 [&>button]:block [&>button]:select-none [&>button]:cursor-pointer">
-          <button type="button" class="hover:underline" id="close-dialog">Batal</button>
+          <button type="button" class="hover:underline close-dialog">Batal</button>
           <button disabled type="submit" id="input-btn" class="bg-violet-500 disabled:cursor-not-allowed disabled:opacity-70 rounded-[3px] text-white p-1.5">Simpan</button>
         </div>
       </form>
     </dialog>
+    <dialog id="success-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md px-8 pt-5">
+      <div class="flex flex-col items-center gap-4">
+        <div class="material-symbols-rounded no-hoef !text-5xl bg-green-400 p-2 rounded-full !text-white">check</div>
+        <p id="success-text">Password berhasil diubah!</p>
+        <button class="close-dialog cursor-pointer btn-primary">Tutup</button>
+      </div>
+    </dialog>
     <script>
-      const dialog = document.getElementById('password-dialog')
+      const pwDialog = document.getElementById('password-dialog')
+      const successDialog = document.getElementById('success-dialog')
       const passwordSetting = document.getElementById('password-setting')
-      dialog.showModal()
 
       passwordSetting.addEventListener('click', () => {
-        dialog.showModal()
+        pwDialog.showModal()
       })
 
-      document.getElementById('close-dialog').onclick = () => dialog.close()
+      document.querySelectorAll('.close-dialog').forEach(elm => {
+        elm.onclick = function() {
+          this.closest('dialog').close()
+        }
+      })
+      
 
       document.getElementById('password-form').addEventListener('submit', async (e) => {
         e.preventDefault()
-        sendPassword(e.target)
+        const dataraw = await sendPassword(e.target)
+        const data = await dataraw.json()
+        console.log(data)
+        if(!dataraw.ok) return showError(data.msg || "Terjadi kesalahan pada Server!")
+        showSuccessDialog(data.msg || "Password berhasil diubah!")
+
       })
 
       document.querySelectorAll('.show-pws').forEach(elm => {
@@ -76,13 +97,15 @@
       const newPassword = document.getElementById('new-password')
       const confirmPassword = document.getElementById('confirm-password')
       const sendBtn = document.getElementById("input-btn")
+      const errorElm = document.getElementById('error-elm')
+
 
       confirmPassword.addEventListener('input', () => {
         if (newPassword.value !== confirmPassword.value) {
-          console.log("Passwords do not match")
+          showError("Password tidak sama!")
           sendBtn.disabled = true
         }else{
-          console.log("Passwords match")
+          hideError()
           sendBtn.disabled = false
         }
       });
@@ -108,6 +131,22 @@
             'Content-Type': 'application/json'
           }
         })
+      }
+
+      function showSuccessDialog(message){
+        pwDialog.close()
+        document.getElementById('success-text').textContent = message
+        successDialog.showModal()
+      }
+
+      function showError(message) {
+        errorElm.querySelector('#text').textContent = message
+        errorElm.classList.remove('!hidden')
+      }
+
+      function hideError() {
+        errorElm.classList.add('!hidden')
+        errorElm.querySelector('#text').textContent = ''
       }
 
     </script>

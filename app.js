@@ -6,6 +6,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 // import { getAllStudentData } from './utils/data/data.js';
 
+import { Data } from './utils/data/model/dataModel.js';
+
 connectToDB()
 
 const app = express();
@@ -21,10 +23,9 @@ app.use(express.static('public'));
 
 app.use('/', mainRouter)
 
-console.log('ENV:', process.env);
 
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`);
-// });
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
 
 export default app;

@@ -7,25 +7,31 @@
     {{{headerHTML}}}
     <main class="below-header pl-3 pr-2 pt-3 md:px-6 md:pt-5">
       <h1>Halo Admin, Selamat <span id="time">Siang</span>!</h1>
+      <p class="mt-3">Selamat datang di halaman dashboard, berikut ringkasan aktifitas terbaru</p>
       <section class="my-4">
         <h2>At a glance</h2>
-        <div class="grid grid-cols-3 gap-4 max-md:grid-cols-1 md:mt-3 [&_p:first-child]:font-bold [&>*]:flex [&>*]:flex-col [&>*]:justify-between [&>*]:gap-4 [&>*]:rounded-md [&>*]:p-4 [&>div>div>p:last-child]:font-medium [&>p:first-child]:text-lg">
-          <div class="bg-amber-200/80">
+        <div class="grid grid-cols-3 gap-4 max-md:grid-cols-1 md:mt-3 [&_p:first-child]:font-bold [&>*]:rounded-md [&>*]:p-4 [&>div>div>p:last-child]:font-medium [&>p:first-child]:text-lg">
+
+          <div class="bg-emerald-400/30 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
             <p>Jumlah Data/Jumlah Yang Diharapkan</p>
-            <p class="mb-3 text-5xl font-bold">7/50</p>
+            <div class="material-symbols-rounded group-hover:filled-icon ">database</div>
+            <p class="mb-3 text-5xl font-bold col-span-2">7/50</p>
+            <progress class="col-span-2" value="7" max="50"></progress>
           </div>
-          <div class="bg-emerald-300/80">
+          <div class="bg-emerald-300/80 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
             <p>Waktu Input Terakhir</p>
+            <div class="material-symbols-rounded group-hover:filled-icon">calendar_today</div>
             <div>
               <p class="text-4xl">17 Juni 2025</p>
-              <p>11 : 00 Wita</p>
+              <p class="flex items-center gap-1.5"><span class="material-symbols-rounded">search_activity</span><span>11 : 00 Wita</span></p>
             </div>
           </div>
-          <div class="bg-rose-300/80">
+          <div class="bg-rose-300/80 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
             <p>Waktu Login Terakhir (Admin sebelumnya)</p>
+            <div class="material-symbols-rounded group-hover:filled-icon">person</div>
             <div>
               <p class="text-4xl" id="date-login-last">loading...</p>
-              <p id="time-login-last">loading...</p>
+              <p class="flex items-center gap-1.5"><span class="material-symbols-rounded">search_activity</span><span id="time-login-last">loading...</span></p>
             </div>
           </div>
         </div>
@@ -35,6 +41,7 @@
     {{{aside}}}
     <script>
       const lastLogin = `{{lastLogin}}`
+      const lastInput = `{{lastLogin}}`
     </script>
   </body>
 </html>

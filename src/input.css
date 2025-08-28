@@ -90,6 +90,15 @@
     -moz-appearance: textfield;
     appearance: textfield;
   }
+  progress{
+    @apply appearance-none w-full rounded-3xl
+  }
+  progress::-webkit-progress-value{
+    @apply bg-violet-500 rounded-3xl
+  }
+  progress::-webkit-progress-bar {
+    @apply bg-slate-500 rounded-3xl
+  }
 
 }
 
@@ -115,7 +124,15 @@
       "FILL" 0,
       "wght" 400,
       "GRAD" 0,
-      "opsz" 24;
+      "opsz" 24 !important;
+      @apply text-[inherit] cursor-default;
+  }
+  .material-symbols-rounded:hover, .fill{
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24 !important;
   }
 }
 
@@ -131,3 +148,11 @@
     @apply h-full border-l-2 max-[480px]:px-2 max-[480px]:py-1;
   }
 }
+
+@utility filled-icon{
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24 !important;
+  }

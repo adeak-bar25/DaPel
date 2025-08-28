@@ -32,6 +32,14 @@ SessionSchema.statics.lastBeforeLatestLogin = async function(){
     }
 }
 
+SessionSchema.statics.getAdminID = async function(sessionUUID){
+    try {
+        return await this.findOne({sessionUUID}).select('adminID -_id')
+    } catch (error) {
+        throw error
+    }
+}
+
 SessionSchema.methods.updateLoginDate = function(){
     this.lastLogin = new Date()
     return this.save()

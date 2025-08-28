@@ -4,7 +4,7 @@ dotenv.config();
 
 export const storeTimeCookieSec = parseInt(process.env.COOKIE_DURATION_SEC);
 
-export const mongoConnectionStr = `${process.env.MONGODB_URI}/${process.env.DB_NAME}`;
+export const mongoConnectionStr = `${process.env.MONGODB_URI}`;
 
 export const port = process.env.PORT || 3000;
 

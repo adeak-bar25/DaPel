@@ -12,18 +12,14 @@ const AdminSchema = new mongoose.Schema({
 })
 
 
-AdminSchema.methods.updateLoginDate = function () {
-    this.lastLogin = new Date()
-    try {
-        return this.save()
-    } catch (error) {
-        throw error
-    }
+AdminSchema.statics.getHashByid = function(_id){
+    return this.findOne({_id}).select('passwordHash -_id')
 }
 
+AdminSchema.statics.changePasswordHashById = function(_id, newHash){
+    return this.updateOne({_id}, {passwordHash : newHash})
+}
 
 const Admin = mongoose.model('admin', AdminSchema)
-
-
 
 export default Admin
