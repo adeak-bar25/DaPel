@@ -6,7 +6,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 // import { getAllStudentData } from './utils/data/data.js';
 
-import { Data } from './utils/data/model/dataModel.js';
 
 connectToDB()
 

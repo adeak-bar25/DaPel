@@ -1,8 +1,8 @@
 import express from 'express';
-import { renderPage } from './../route.js';
-import { TokenVSchema, StudentVSchema } from '../../utils/controller/validate.js';
-import { InputSession, Student } from '../../utils/data/data.js';
-import { validateAndGetTokenCookie } from '../../utils/controller/auth.js'
+import { renderPage, renderFormField } from '../../views/utils/render.js';
+import { StudentVSchema } from '../../utils/controller/validate.js';
+import { DataModel, TokenModel } from '../../utils/data/data.js';
+// import { validateAndGetTokenCookie } from '../../utils/controller/auth.js'
 
 const router = express.Router();
 
@@ -11,29 +11,42 @@ router.get('/', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-  if(req.query.e === 'inval') return renderPage(res, 'userlogin', 'Masukkan Token', null, 'Token tidak valid, token harus berupa angka 6 digit!');
-  if(req.query.e === 'wrong') return renderPage(res, "userlogin", "Masukkan Token", null, "Token Salah, silahkan cek kembali!")
-  if(req.query.e === 'expired') return renderPage(res, "userlogin", "Masukkan Token", null, "Token Expired/Limit, silahkan hubungi admin!")
-  renderPage(res, 'userlogin', 'Masukkan Token');
+  function showPage(msg){
+      return renderPage(res, 'userlogin', 'Masukkan Token', null, msg? msg : null);
+  }
+
+  switch(req.query.e){
+    case 'inval':
+      return showPage('Token tidak valid, token harus berupa angka 6 digit!');
+    case 'wrong':
+      return showPage("Token Salah, silahkan cek kembali!")
+    case 'expired':
+      return showPage("Token Expired/Limit, silahkan hubungi admin!")
+    case 'intrna':
+      return showPage("Server gagal mengecek token, silahkan coba lagi!")
+    default:
+      return showPage();
+  }
 });
 
-router.post('/login', async (req, res) => {
-  res.clearCookie('token')
-  const validatedToken = await TokenVSchema.safeParseAsync(req.body.token)
-  console.log(validatedToken)
-  if(!validatedToken.success){
-    return res.status(400).redirect(`/user/login?e=${validatedToken.error.issues[0].code === "expired"? "expired" : "wrong" }`)
+router.post('/login', (req, res) => {
+  res.redirect(`/user/input?token=${req.body.token}`);
+})
+
+router.use(async (req, res, next) => {
+  function redirectBadReq(errCode){
+    res.status(400).redirect(`/user/login${errCode? `?e=${errCode}` : ''}`)
   }
-  res.cookie('token', validatedToken.data, { 
-    httpOnly: true,
-    sameSite: 'strict'
-  });
-  res.redirect('/user/input');
+
+  const tokeninfo = await TokenModel.isUseAble(req.query.token)
+  if(!tokeninfo.success) return redirectBadReq(tokeninfo.errCode)
+  next();
 })
 
 router.get('/input', async (req, res, next) => {
-  const tokenInfo = await validateAndGetTokenCookie(req, res)
-  renderPage(res, "userinput", "Masukkan Data Anda", {classname : [tokenInfo.grade, tokenInfo.className].join('-')});
+  const tokenInfo = await DataModel.getDataInfoByToken(req.query.token)
+
+  renderPage(res, "userinput", "Masukkan Data Anda", {fields : renderFormField(tokenInfo.fields)});
 })
 
 router.post('/input', async (req, res, next) => {

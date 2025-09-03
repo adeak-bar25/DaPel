@@ -14,61 +14,60 @@
             <p class="sm-p">Buat token untuk sesi input data (Perkelas)</p>
         </div>
         <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
-      </section>
-      <section onclick="document.getElementById('dialog-history').showModal()" tabindex="0" id="history" class="-mx-3 my-4 flex items-center justify-between group bg-violet-50 hover:bg-violet-400/20 p-4 rounded-md cursor-pointer">
+    </section>
+    <section onclick="document.getElementById('dialog-history').showModal()" tabindex="0" id="history" class="-mx-3 my-4 flex items-center justify-between group bg-violet-50 hover:bg-violet-400/20 p-4 rounded-md cursor-pointer">
         <div>
             <h4 class="font-bold">Lihat History Token</h4>
             <p class="sm-p">Lihat token yang sudah dibuat sebelumnya </p>
         </div>
         <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
-      </section>
+    </section>
+    {{!-- <section onclick="document.getElementById('dialog-setfield').showModal()" tabindex="0" id="set-field" class="-mx-3 my-4 flex items-center justify-between group bg-violet-50 hover:bg-violet-400/20 p-4 rounded-md cursor-pointer">
+        <div>
+            <h4 class="font-bold">Atur Field Form</h4>
+            <p class="sm-p">Atur Field yang akan digunakan untuk form</p>
+        </div>
+        <div class="material-symbols-rounded h-fit group-hover:text-primary">arrow_forward_ios</div>
+    </section> --}}
 
         <dialog closedby="any" id="generate-dialog" class="bg-white fixed m-auto backdrop:bg-black/35 p-4 outline-0 rounded-md md:max-w-150">
             <div class="flex justify-between items-center mb-3 gap-8 border-b border-b-slate-950 pb-2">
                 <div>
                     <h4 class="font-bold">Generate Input Token</h4>
-                    <p class="sm-p break-after-all">Masukkan Nama Kelas dan Jumlah Input Maksimal untuk membuat token</p>
+                    <p class="sm-p break-after-all">Masukkan Nama Form dan Jumlah Input Maksimal untuk membuat token</p>
                 </div>
                 <div class="close-dialog material-symbols-rounded hover:bg-violet-300/20 p-2 rounded-full transition-colors cursor-pointer">close</div>
             </div>
-            <form class="[&_label]:pb-2 [&_label]:block [&_input]:mb-3">
-                <div id="errorElm" class="hidden my-2 bg-rose-300/50 border border-red-600 rounded-md gap-2 p-2 flex-row items-center">
-                    <div class="material-symbols-rounded !text-red-600">error</div>
-                    <p>Error : <span id="errormsg" class="break-words"></span></p>
-                </div>
-                <div class="mb-3 flex gap-7 justify-center">
-                    {{!-- <fieldset>
-                        <label for="class">Kelas</label>
-                        <input class="w-10 text-center" type="number" name="grade" id="class">
-                    </fieldset>
+            <form id="generate-form" class="[&_label]:pb-2 [&_label]:block [&_input]:mb-3">
+                
+                <div class="flex flex-row justify-center gap-3">
                     <fieldset>
-                        <label for="className">Nama Kelas</label>
-                        <input type="text" name="className" id="classname">
+                        <label for=form-name"">Nama Form</label>
+                        <input type="text" name="formName" id="form-name" placeholder="Masukkan Nama Form" required>
                     </fieldset>
-                    <div class="sep-y border-slate-700 h-20"></div> --}}
-                    <fieldset>
+                    <fieldset class="mb-3 flex flex-col justify-center items-center">
                         <label for="maxinput">Max Input</label>
-                        <input class="w-15" type="number" name="maxInput" id="maxinput"></label>
+                        <input class="w-15 text-center" placeholder="10" type="number" name="maxInput" id="maxinput">
                     </fieldset>
                 </div>
                 <fieldset class="mx-auto w-fit flex flex-col justify-center">
                     <label for="expire-at" class="text-center">Batas Waktu Input (Opsional)</label>
                     <input type="datetime-local" name="expireAt" id="expire-at" placeholder="Hello">
                 </fieldset>
-                <button class="btn-primary cursor-pointer select-none mx-auto mt-2 block" type="submit">Generate</button>
+                <button class="btn-primary cursor-pointer select-none mx-auto mt-2 block" type="submit">Lanjut</button>
             </form>
+        </dialog>
             <!-- 
                 Komponen ini menggunakan Flowbite Spinner
                 Sumber: https://flowbite.com/docs/components/spinner/
             -->
-            <div role="status" id="spinner" class="hidden justify-center items-center fixed inset-0 bg-black/50">
+            <div role="status" id="spinner" class="flex !hidden justify-center items-center fixed inset-0 bg-black/50">
                 <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-white fill-primary" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                     <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
                 </svg>
                 <span class="sr-only">Loading...</span>
             </div>
-        </dialog>
 
 
         <dialog closedby="closerequest" id="success-dialog" class="fixed backdrop:bg-black/35 m-auto bg-white p-6 rounded-md">
@@ -84,21 +83,159 @@
             </div>
         </dialog>
 
-        <dialog id="dialog-history" class="fixed m-auto backdrop:bg-black/35 bg-white p-4 rounded-md md:max-w-150">
+        <dialog id="dialog-history" closeby="any" class="fixed m-auto backdrop:bg-black/35 bg-white p-4 rounded-md md:max-w-150">
             <h3 class="font-bold">History Token</h3>
             <div class="mr-5">
                 <p>Fitur ini belum tersedia</p>
             </div>
-            <button class="close-dialog">Close</button>
+            <button class="close-dialog">Batal</button>
+        </dialog>
+
+        <dialog id="dialog-setfield" closeby="any" class="fixed m-auto backdrop:bg-black/35 bg-white p-4 rounded-md md:max-w-150">
+            <h3 class="font-bold">Atur Field Form</h3>
+            
+            <form class="flex flex-row gap-2 h-9 items-center">
+                <input type="text" id="field-input" class="h-full" placeholder="Nama Field">
+                <button onclick="addField()" class="bg-violet-500 h-full px-2 text-white rounded-md border-primary border-2">Tambah</button>
+            </form>
+            <div id="errorElm" class="!hidden flex my-2 bg-rose-300/50 border border-red-600 rounded-md gap-2 p-2 flex-row items-center">
+                <div class="material-symbols-rounded !text-red-600">error</div>
+                <p>Error : <span id="errormsg" class="break-words"></span></p>
+            </div>
+            <div class="my-4" id="field-list">
+            </div>
+            <div id="bef-forminfo" class="hidden"></div>
+            <div class="flex justify-end gap-4 mt-4 items-center">
+                <button class="close-dialog">Batal</button>
+                <button class="btn-primary" onclick="sendField()">Simpan</button>
+            </div>
         </dialog>
     </main>
+    
     {{{aside}}}
+    <script>
+        const fieldListElm = () => document.getElementById('field-list')
+
+        const emptyFieldMsg = '<p id="empty-msg" class="text-sm text-center text-slate-950/70">Field Kosong, isi field terlebih dahulu!</p>'
+        
+        if(fieldListElm().children.length < 1) fieldListElm().insertAdjacentHTML('beforeend', emptyFieldMsg)
+
+        function removeField(elm){
+            elm.closest('.field-item').remove()
+            if(fieldListElm().children.length < 1) fieldListElm().insertAdjacentHTML('beforeend', emptyFieldMsg)
+        }
+
+
+        document.getElementById('generate-form').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const formElm = document.getElementById('generate-form')
+            const infoElm = document.getElementById("bef-forminfo")
+
+            const formData = new FormData(formElm)
+            const data = Object.fromEntries(formData.entries())
+            
+            for(const d in data){
+                infoElm.dataset[d] = data[d]
+            }
+            
+            document.getElementById('dialog-setfield').showModal()
+        })
+
+        
+        async function sendField(){
+            const errorElm = document.getElementById("errorElm")
+            const spinner = document.getElementById("spinner")
+
+            const field = Array.from(document.getElementsByClassName("field-item")).map(e => {
+                return {fieldName : e.dataset.field, isRequired : e.dataset.required === "true"}
+            })
+            const infoElm = document.getElementById("bef-forminfo")
+            
+            errorElm.classList.add("!hidden")
+
+            function getPrevInfo(){
+                if(infoElm.dataset.length === 0) return null;
+                return infoElm.dataset
+            }
+
+            function showErr(msg){
+                errorElm.classList.remove("!hidden")
+                return errorElm.querySelector('#errormsg').textContent = msg
+            }
+
+            function closeAllDialog(){
+                document.querySelectorAll('dialog').forEach(elm => {
+                    elm.close()
+                })
+            }
+
+
+            let resObj = {msg : "Tidak dapat mengirim data"}
+            
+            try{
+                spinner.classList.remove("!hidden")
+                resObj = await hitNewInSesApi(Object.assign({field}, getPrevInfo()))
+            }catch(err){
+                showErr("Terjadi Kesalahan Pada Server")
+                throw err
+            }finally{
+                spinner.classList.add("!hidden")
+            }
+
+            if(!resObj.ok) return showErr(resObj.msg)
+
+            const successDialog = document.getElementById("success-dialog")
+
+            successDialog.querySelector('#code').textContent = resObj.token
+
+            closeAllDialog()
+            
+            successDialog.showModal()
+        }
+
+        async function hitNewInSesApi(obj){
+            const res = await fetch('/admin/dashboard/api/newinputsec', {
+                method : "post",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body : JSON.stringify(obj)
+            })
+
+            return res.json()
+        }
+
+        function addField(){
+            event.preventDefault()
+            const fieldComp = function(fieldName){
+                const id = crypto.randomUUID()
+                return `<div data-field="${fieldName}" data-required="false" class="field-item flex flex-row gap-3 justify-between items-center border-b border-b-slate-400 py-1.5 mb-3">
+                                <p class="font-bold">${fieldName}</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="!cursor-pointer h-fit leading-0" title="Atur Sebagai Wajib">
+                                        <input id="${id}" onchange="this.closest('.field-item').dataset.required = (this.checked? 'true' : 'false')" type="checkbox" class="is-required hidden peer">
+                                        <label for="${id}" class="material-symbols-rounded peer-checked:bg-primary/40 p-0.5 rounded-sm">asterisk</label>
+                                    </div>
+                                    <div onclick="removeField(this)" class="material-symbols-rounded !cursor-pointer" title="Hapus Field" >delete</div>
+                                </div>
+                        </div>`
+            }
+            
+            const fieldInput = document.getElementById('field-input')
+            if(!fieldInput.value) return null;
+            if(document.getElementById('empty-msg')){
+                document.getElementById('empty-msg').remove()
+            }
+            fieldListElm().insertAdjacentHTML('beforeend', fieldComp(fieldInput.value))
+            fieldInput.value = ""
+        }
+
+    </script>
     <script type="module">
         import dayjs from 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm';
         import utc from "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/plugin/utc/+esm"
 
-        document.getElementById("dialog-history").showModal()
-
+        {{!-- document.getElementById("dialog-setfield").showModal() --}}
 
         const generateElm = document.getElementById('generate')
         const generateDialogElm = document.getElementById('generate-dialog')
@@ -113,43 +250,6 @@
         })
 
         const spinner = document.getElementById('spinner')
-
-        document.forms[0].addEventListener('submit', function(e){
-            e.preventDefault()
-            const data = Object.fromEntries(new FormData(this).entries());
-            data.expireAt = (() => {if(data.expireAt){
-                return dayjs(data.expireAt).utc().format()
-            }})()
-            fetchToGenerate(data)
-        })
-
-        function fetchToGenerate(data){
-            spinner.style.display = 'flex'
-            document.getElementById('errorElm').style.display = 'none'
-            fetch('/admin/dashboard/api/newinputsec', {
-                method : "post",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body : JSON.stringify(data)
-            })
-            .finally(() => {
-                spinner.style.display = 'none'
-            })
-            .then(async res => {
-                const obj = await res.json()
-                if(!obj.ok){
-                    document.getElementById('errorElm').style.display = 'flex'
-                    return document.getElementById('errormsg').innerHTML = obj.msg
-                }
-                document.getElementById("code").textContent = obj.token 
-                document.getElementById("success-dialog").showModal()
-                generateDialogElm.close()
-            }).catch(err => {
-                document.getElementById('errorElm').style.display = 'flex'
-                document.getElementById('errormsg').innerHTML = "Terjadi Masalah Pada Server"
-            })
-        }
 
         document.getElementById("copy").addEventListener('click', async function() {
             await navigator.clipboard.writeText(document.getElementById('code').textContent)

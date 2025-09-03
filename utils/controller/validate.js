@@ -1,7 +1,5 @@
 import { z, ZodError } from "zod"
 import validator from 'validator';
-import Student from '../data/model/studentmodel.js';
-import { InputSession } from "../data/data.js";
 import { is } from "zod/locales";
 
 export function generateVSchema(fields){
@@ -97,20 +95,14 @@ export const TokenVSchema = z.coerce.number()
                 .min(100000, "Token tidak valid")
                 .max(999999, "Token tidak valid")
                 .superRefine(async(val, ctx) => {
-                    const b = await InputSession.inputAvailable(val)
-                    if(b === null){
-                        ctx.addIssue({
-                            code : "custom",
-                            message : "Token tidak valid"
-                        })
-                    }
+                    // const b = await InputSession.inputAvailable(val)
                     
-                    if(b === false){
-                        ctx.addIssue({
-                            code : "expired",
-                            message : "Kuota input telah habis, silahkan hubungi admin"
-                        })
-                    }
+                    // if(b === false){
+                    //     ctx.addIssue({
+                    //         code : "expired",
+                    //         message : "Kuota input telah habis, silahkan hubungi admin"
+                    //     })
+                    // }
                 })
 
 export {ZodError}

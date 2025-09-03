@@ -34,7 +34,8 @@ SessionSchema.statics.lastBeforeLatestLogin = async function(){
 
 SessionSchema.statics.getAdminID = async function(sessionUUID){
     try {
-        return await this.findOne({sessionUUID}).select('adminID -_id')
+        const { adminID } = await this.findOne({sessionUUID}).select('adminID -_id')
+        return adminID
     } catch (error) {
         throw error
     }
@@ -45,7 +46,7 @@ SessionSchema.methods.updateLoginDate = function(){
     return this.save()
 }
 
-const AdminSession = mongoose.model('AdminSession', SessionSchema)
+const AdminSessionModel = mongoose.model('AdminSession', SessionSchema)
 
 
-export default AdminSession;
+export default AdminSessionModel;

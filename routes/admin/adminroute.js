@@ -1,8 +1,9 @@
 import express from 'express';
 import { renderPage, renderStudentData, getAllStudentData } from './../route.js';
 import { authenticateAdmin, createNewAdminAccount, createNewAdminSession, generateInputToken, cookieLogin, changePassword } from '../../utils/controller/auth.js';
-import { AdminSession, Admin, InputSession, Student } from '../../utils/data/data.js';
+import { AdminSessionModel, Admin, DataModel, TokenModel } from '../../utils/data/data.js';
 import { ZodError, StudentVSchema, InputSessionVSchema } from './../../utils/controller/validate.js'
+import { object } from 'zod';
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.post('/login', async (req, res) => {
   console.log(`Login attempt with username: "${req.body.username}" at ${new Date().toLocaleString()}`);
   const auth = await authenticateAdmin(req.body.username, req.body.password);
   if(auth){
-    await createNewAdminSession(req.body.username, res)
+    await createNewAdminSessionModel(req.body.username, res)
     res.status(303).redirect('/admin/dashboard')
     console.log(`Username : "${req.body.username}" successfully login at ${new Date().toLocaleString()} \n`)
   }else{
@@ -41,7 +42,7 @@ router.post('/new', async (req, res) => {
   }
   await createNewAdminAccount(req.body.username, req.body.password);
   console.log('New admin account created:', req.body.username);
-  await createNewAdminSession(req.body.username, res)
+  await createNewAdminSessionModel(req.body.username, res)
   res.status(303).redirect('/admin/dashboard');
 })
 
@@ -56,13 +57,13 @@ router.use('/dashboard/', async (req, res, next) => {
 
 router.get('/dashboard', async (req, res, next) => {
   try {
-    renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await AdminSession.lastBeforeLatestLogin(), lastInput : await Student.getlastUpdated()} )
+    renderPage(res, 'dashboardhome', 'Dashboard Admin', {lastLogin : await AdminSessionModel.lastBeforeLatestLogin()})
   } catch (error) {
     next(error)
   }
 })
 
-router.get('/dashboard/data', async (req, res) => {
+router.get('/dashboard/data', async (req, res, next) => {
   try {
     renderPage(res, 'dashboarddata', 'Data - Dashboard Admin', {studentData : renderStudentData(await getAllStudentData())} )
   } catch (error) {
@@ -79,26 +80,29 @@ router.get('/dashboard/control', (req, res) => {
 })
 
 router.post('/dashboard/api/newinputsec', async (req, res, next) =>{
-  const {grade, className, maxInput, expireAt} = req.body;
-  const token = generateInputToken()
+  if(!req.body.formName || !req.body.maxInput ) return req.status(400).json({ok : false, msg : "Form Name dan Max Input harus diisi"})
   try {
-    const validatedInput = InputSessionVSchema.safeParse({grade, className, maxInput, token, expireAt : expireAt? new Date(expireAt).toISOString(): null})
-    if(!validatedInput.success) {
-      const errorMsgArr = validatedInput.error.issues.map(e => e.message)
-      return res.status(400).json({
-        ok : false,
-        msg : errorMsgArr.length > 1? [errorMsgArr.slice(0, errorMsgArr.length - 1).join(", ") , errorMsgArr[errorMsgArr.length - 1]].join(", dan "): errorMsgArr[0]
-      })
-    }
-    try {
-      await InputSession.addNewSession(validatedInput.data)
-      return res.json({ok: true,token})
-    } catch (error) {
-      return next(error)
-    }
-  }catch (err) {
-    next(err)
+    const { _id : dataID } = await DataModel.create({
+      ownerID : await AdminSessionModel.getAdminID(req.cookies.loginDapelSes),
+      formName : req.body.formName,
+      field : req.body.field
+    })
+    console.log(dataID.toString())
+    const { token } = await TokenModel.generateToken({
+      dataID : dataID.toString(),
+      maxInput : parseInt(req.body.maxInput),
+      expireAt : req.body.expireAt
+    })
+    res.json({
+      ok : true,
+      msg : "Berhasil membuat token",
+      token
+    })
+  } catch (error) {
+    next(error)
   }
+
+  
 })
 
 router.delete('/dashboard/api/delete/student', async (req, res, next) => {
@@ -127,5 +131,6 @@ router.put('/dashboard/api/update/password', async (req, res, next) => {
     next(error)
   }
 })
+
 
 export default router;

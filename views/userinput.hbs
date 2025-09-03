@@ -14,7 +14,7 @@
           <p class="my-3">Silahkan masukkan data pribadi anda, pastikan Anda memasukkannya dengan benar! </p>
           <form action="/user/input" method="post" class="[&_input]:w-[90%] [&>input]:mb-1 [&>input]:mt-0.5">
             {{{error}}}
-            <label for="name">Nama</label>
+            {{!-- <label for="name">Nama</label>
             <input type="text" name="name" id="name" placeholder="Masukkan nama anda" required>
             <label for="class">Kelas</label>
             <input disabled value="{{classname}}" type="text" class="bg-gray-200" id="class">
@@ -36,7 +36,8 @@
             <label for="email">Email</label>
             <input type="email" name="email" placeholder="Masukkan email anda" id="email" required>
             <label for="phone">No.Telpon</label>
-            <input type="phone" name="phone" placeholder="Masukkan Nomor Telpon anda" id="phone" required>
+            <input type="phone" name="phone" placeholder="Masukkan Nomor Telpon anda" id="phone" required> --}}
+            {{{fields}}}
             <button type="submit" class="btn-primary my-4 cursor-pointer">Kirim</button>
           </form>
         </div>

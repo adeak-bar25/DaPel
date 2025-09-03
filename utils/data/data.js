@@ -1,10 +1,9 @@
-import Student from './model/studentmodel.js';
 import Admin from './model/adminmodel.js';
-import AdminSession from './model/adminsession.js';
-import InputSession from './model/studentinputsession.js';
+import AdminSessionModel from './model/adminsession.js';
+import { DataModel } from './model/dataModel.js'
+import { TokenModel } from './model/tokenModel.js';
 
-
-export {Admin, AdminSession, Student, InputSession}
+export {Admin, AdminSessionModel, DataModel, TokenModel}
 
 export async function addAdmin(name, passwordHash){
     try {

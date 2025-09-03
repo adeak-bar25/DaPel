@@ -1,11 +1,10 @@
-import { getAdminInfo, addAdmin, addAdminSession, InputSession, AdminSession, Admin } from "../data/data.js";
+import { getAdminInfo, addAdmin, addAdminSession, AdminSessionModel, Admin } from "../data/data.js";
 import { saltRounds, storeTimeCookieSec } from '../config.js'
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import {TokenVSchema} from './validate.js';
 import { object } from "zod";
 
-// console.log("Salt",saltRounds)
 
 export async function authenticateAdmin(username, password){
     const admin = await getAdminInfo(username)
@@ -36,7 +35,7 @@ export async function createNewAdminSession(adminName, res){
 }
 
 export async function changePassword(sessionId, oldPassword, newPassword){
-    const {adminID} = await AdminSession.getAdminID(sessionId)
+    const {adminID} = await AdminSessionModel.getAdminID(sessionId)
     const {["passwordHash"]: oldHash} = await Admin.getHashByid(adminID)
     
     if(!await bcrypt.compare(oldPassword, oldHash)) throw new Error("Password lama salah")
@@ -46,7 +45,7 @@ export async function changePassword(sessionId, oldPassword, newPassword){
 }
 
 export async function cookieLogin(uuid){
-    const s = await AdminSession.sessionInfo(uuid)
+    const s = await AdminSessionModel.sessionInfo(uuid)
     const session = s?? {}
     class Cookie{
         constructor(uuid){
@@ -76,11 +75,6 @@ export async function cookieLogin(uuid){
     return new Cookie(uuid)
 }
 
-export async function validateAndGetTokenCookie(req, res){
-    const vToken = await TokenVSchema.safeParseAsync(req.cookies.token)
-    if(!vToken.success) return res.status(400).redirect('/user/login?e=inval')
-    return await InputSession.checkToken(vToken.data)
-}
 
 function hashPassword(password){
     return bcrypt.hash(password, saltRounds)
