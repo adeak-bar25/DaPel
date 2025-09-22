@@ -91,12 +91,12 @@
     appearance: textfield;
   }
   progress{
-    @apply appearance-none w-full rounded-3xl
+    @apply appearance-none w-full rounded-3xl bg-slate-50
   }
-  progress::-webkit-progress-value{
-    @apply bg-violet-500 rounded-3xl
+  progress::-webkit-progress-bar{
+    @apply rounded-3xl bg-slate-50
   }
-  progress::-webkit-progress-bar {
+  progress::-webkit-progress-value, progress::-moz-progress-bar {
     @apply bg-slate-500 rounded-3xl
   }
 
@@ -127,7 +127,7 @@
       "opsz" 24 !important;
       @apply text-[inherit] cursor-default;
   }
-  .material-symbols-rounded:hover, .fill{
+  .material-symbols-rounded:not(.no-hoef):hover, .fill{
     font-variation-settings:
       "FILL" 1,
       "wght" 400,

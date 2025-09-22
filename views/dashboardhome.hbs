@@ -2,6 +2,9 @@
 <html lang="id">
   <head>
     {{{head}}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dialog-polyfill@0.5.6/dialog-polyfill.css">
+    <script src="https://cdn.jsdelivr.net/npm/dialog-polyfill@0.5.6/dialog-polyfill.js"></script>
+
   </head>
   <body class="bg-slate-50 ">
     {{{headerHTML}}}
@@ -10,9 +13,9 @@
       <p class="mt-3">Selamat datang di halaman dashboard, berikut ringkasan aktifitas terbaru</p>
       <section class="my-4">
         <h2>At a glance</h2>
-        <div class="grid grid-cols-3 gap-4 max-md:grid-cols-1 md:mt-3 [&_p:first-child]:font-bold [&>*]:rounded-md [&>*]:p-4 [&>div>div>p:last-child]:font-medium [&>p:first-child]:text-lg">
+        <div class="grid grid-cols-2 gap-4 max-md:grid-cols-1 md:mt-3 [&_p:first-child]:font-bold [&>*]:rounded-md [&>*]:p-4 [&>div>div>p:last-child]:font-medium [&>p:first-child]:text-lg">
 
-          <div class="bg-emerald-400/30 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
+          <div class="bg-rose-300/80 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
             <p>Jumlah Data/Jumlah Yang Diharapkan</p>
             <div class="material-symbols-rounded group-hover:filled-icon ">database</div>
             <p class="mb-3 text-5xl font-bold col-span-2">7/50</p>
@@ -26,14 +29,31 @@
               <p class="flex items-center gap-1.5"><span class="material-symbols-rounded">search_activity</span><span>11 : 00 Wita</span></p>
             </div>
           </div>
-          <div class="bg-rose-300/80 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
+          {{!-- <div class="bg-rose-300/80 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
             <p>Waktu Login Terakhir (Admin sebelumnya)</p>
             <div class="material-symbols-rounded group-hover:filled-icon">person</div>
             <div>
               <p class="text-4xl" id="date-login-last">loading...</p>
               <p class="flex items-center gap-1.5"><span class="material-symbols-rounded">search_activity</span><span id="time-login-last">loading...</span></p>
             </div>
-          </div>
+          </div> --}}
+        </div>
+      </section>
+      <section>
+        <h2>Quick Action</h2>
+        <div class="flex gap-4 [&>*]:w-1/2 [&>*]:no-underline">
+          <a href="/admin/dashboard/control#newinputsec">
+            <div class="bg-sky-300 p-5 rounded-md flex flex-col justify-center items-center [&>*]:w-fit">
+              <p class="material-symbols-rounded">add</p>
+              <p>Buat Sesi Input data Baru</p>
+            </div>
+          </a>
+          <a href="/admin/dashboard/data">
+            <div class="bg-yellow-300 p-5 rounded-md flex flex-col justify-center items-center [&>*]:w-fit">
+              <p class="material-symbols-rounded">data_loss_prevention</p>
+              <p>Lihat Semua Data Yang Dimasukkan</p>
+            </div>
+          </a>
         </div>
       </section>
       

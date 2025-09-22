@@ -12,7 +12,7 @@
         <div class="col-start-2 ml-18 flex flex-col justify-center max-md:ml-2">
           <h1>Masukkan Data Pribadi Anda</h1>
           <p class="my-3">Silahkan masukkan data pribadi anda, pastikan Anda memasukkannya dengan benar! </p>
-          <form action="/user/input" method="post" class="[&_input]:w-[90%] [&>input]:mb-1 [&>input]:mt-0.5">
+          <form id="form" method="post" class="[&_input]:w-[90%] [&>input]:mb-1 [&>input]:mt-0.5">
             {{{error}}}
             {{!-- <label for="name">Nama</label>
             <input type="text" name="name" id="name" placeholder="Masukkan nama anda" required>
@@ -41,6 +41,14 @@
             <button type="submit" class="btn-primary my-4 cursor-pointer">Kirim</button>
           </form>
         </div>
+        <script type="module">
+          document.getElementById('form').setAttribute('action', `/user/input?token=${new URLSearchParams(window.location.search).get('token')}`)
+
+          console.log()
+          console.log(document.getElementById('form'))
+
+
+        </script>
     </main>
   </body>
 </html>

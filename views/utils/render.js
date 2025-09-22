@@ -21,8 +21,17 @@ export function renderAvatar(name){
     return avatar.toString()
 }
 
-export function renderFormField(fieldsArr){
-    return fieldsArr.map(v => layout.fieldElement(v.fieldName, v.isRequired)).join("")
-}
+// export function renderFormField(fieldsArr){
+//     // console.log(fieldsArr)
+//     console.log(fieldsArr.map(v => {return layout.fieldElement(v.fieldName)}))
+//     return fieldsArr.map(v => layout.fieldElement(v.fieldName).join(""))
+// }
 
-// export function
+export function renderTableHeader(fieldArr){
+    return `<thead>
+                <tr>
+                    <th class="w-[1%] whitespace-nowrap">No</th>
+                    ${fieldArr.map(v => layout.tableHeader(v.fieldName)).join("")}
+                </tr>
+            </thead>`
+}

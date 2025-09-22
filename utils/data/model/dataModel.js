@@ -1,110 +1,201 @@
 import mongoose from "mongoose";
-import validator from "validator"
-import { TokenModel } from "./tokenModel.js";
+import validator from "validator";
+import { customAlphabet } from "nanoid";
+import { z, ZodError } from "zod";
+import AdminSessionModel from "./adminsession.js";
+import * as changeCase from "change-case";
 
 import { generateVSchema } from "../../controller/validate.js";
-import { formatError, string, ZodError } from "zod";
 
+// class FieldCore {
+//     constructor(fieldName, type, isRequired) {
+//         this.fieldName = fieldName;
+//         this.type = type;
+//         this.isRequired = isRequired;
+//     }
+// }
 
-class FieldCore{
-    constructor(fieldName, type, isRequired ){
-        this.fieldName = fieldName
-        this.type = type
-        this.isRequired = isRequired
+// class TextField extends FieldCore {
+//     constructor(fieldName, isRequired, minLength) {
+//         super(fieldName, "string", isRequired);
+//         this.minLength = minLength;
+//     }
+// }
+
+// class NumberField extends FieldCore {
+//     constructor(fieldName, isRequired, min, max) {
+//         super(fieldName, "number", isRequired);
+//         this.min = min;
+//         this.max = max;
+//     }
+// }
+
+// class EnumField extends FieldCore {
+//     constructor(fieldName, isRequired, options) {
+//         super(fieldName, "enum", isRequired);
+//         this.options = options;
+//     }
+// }
+
+// class EmailField extends FieldCore {
+//     constructor(fieldName, isRequired) {
+//         super(fieldName, "email", isRequired);
+//         validator: (v) => validator.isEmail(v);
+//     }
+// }
+
+// class DateField extends FieldCore {
+//     constructor(fieldName, isRequired) {
+//         super(fieldName, "date", isRequired);
+//     }
+// }
+
+// class PhoneNumberField extends FieldCore {
+//     constructor(fieldName, isRequired) {
+//         super(fieldName, "phone", isRequired);
+//     }
+// }
+
+const tokenAlphabet = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
+const nanoid = customAlphabet(tokenAlphabet, 6);
+
+export const TokenStatInfo = {
+    EXPIRED: Symbol("expired"),
+    NOTFOUND: Symbol("notfound"),
+    FULL: Symbol("full"),
+    INVALID: Symbol("invalid"),
+    OK: Symbol("ok")
+};
+
+const TokenSchema = new mongoose.Schema({
+    token: {
+        type: String,
+        required: true,
+        default: () => nanoid(6)
+    },
+    expireAt: {
+        type: Date,
+        required: false,
+        default: null
+    },
+    maxInput: {
+        type: Number,
+        required: true
+    },
+    currentInput: {
+        type: Number,
+        default: 0
     }
-} 
-
-class TextField extends FieldCore{
-    constructor(fieldName, isRequired, minLength){
-        super(fieldName, "string", isRequired)
-        this.minLength = minLength
-    }
-}
-
-class NumberField extends FieldCore{
-    constructor(fieldName, isRequired, min, max){
-        super(fieldName, "number", isRequired)
-        this.min = min
-        this.max = max
-    }
-}
-
-class EnumField extends FieldCore{
-    constructor(fieldName, isRequired, options){
-        super(fieldName, "enum", isRequired)
-        this.options = options
-    }
-}
-
-class EmailField extends FieldCore{
-    constructor(fieldName, isRequired){
-        super(fieldName, "email", isRequired)
-        validator: (v) => validator.isEmail(v)
-    }
-}
-
-class DateField extends FieldCore{
-    constructor(fieldName, isRequired){
-        super(fieldName, "date", isRequired)
-    }
-}
-
-class PhoneNumberField extends FieldCore{
-    constructor(fieldName, isRequired){
-        super(fieldName, "phone", isRequired)
-    }
-}
+});
 
 const DataSchema = new mongoose.Schema({
-    ownerID : {
-        type : String,
-        required : true
+    ownerID: {
+        type: String,
+        required: true
     },
-    formName : {
-        type : String,
-        required : true
+    formName: {
+        type: String,
+        required: true
     },
     fields: {
-        type : Array,
-        required : true
+        type: Array,
+        required: true
+    },
+    tokenInfo: {
+        type: TokenSchema,
+        required: true
     }
-})
+});
 
+DataSchema.statics.newData = async function (ownerID, formName, fields, maxInput, expireAt) {
+    return this.create({
+        ownerID,
+        formName,
+        fields,
+        tokenInfo: {
+            maxInput,
+            expireAt
+        }
+    });
+};
 
-DataSchema.statics.getFieldByDataID = async function(_id){
-    const {fields} = await this.findOne({_id}).select("fields -_id").exec()
-    return fields
-}
+DataSchema.statics.incrementInputCount = async function (token) {
+    return this.updateOne({ "tokenInfo.token": token }, { $inc: { "tokenInfo.currentInput": 1 } });
+};
 
-DataSchema.statics.getDataInfoByToken = async function(token){
-    return this.findOne({_id : await TokenModel.getTokenDataID(token)})
-        .select("-_id -__v").exec()
-}
+DataSchema.statics.isTokenUsable = async function (token) {
+    const val = z.coerce
+        .string()
+        .regex(new RegExp(`^[${tokenAlphabet}]{6}$`), TokenStatInfo.INVALID)
+        .superRefine(async (val, ctx) => {
+            const submissionInfo = await this.findOne({ "tokenInfo.token": val }).select(" -_id");
+            if (!submissionInfo) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: TokenStatInfo.NOTFOUND
+                });
+                return;
+            }
+            if (submissionInfo.tokenInfo.expireAt < new Date()) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: TokenStatInfo.EXPIRED
+                });
+                return;
+            }
+            if (submissionInfo.tokenInfo.currentInput >= submissionInfo.tokenInfo.maxInput) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: TokenStatInfo.FULL
+                });
+                return;
+            }
+        });
 
+    const final = await val.safeParseAsync(token);
+    return { ok: final.success, error: final.error?.issues.map((e) => e.message) };
+};
 
-// setTimeout(async() => {
-//     // Data.InsertSubmission("68ad06277f00d3aa9145bbf8", insertedData).then(res => console.log(res)).catch(err => console.log(err))
-//     DataModel.getDataInfoByToken("757824")
-//     .then(res => console.log(res))
-//     .catch(err => console.log(err))
-// }, 200)
+DataSchema.statics.getFieldByDataID = async function (_id) {
+    const { fields } = await this.findOne({ _id }).select("fields -_id").exec();
+    return fields;
+};
 
-// setTimeout(async() => {
-//     new Data({
-//         ownerId : "68ad06277f00d3aa9145bbf8",
-//         formName : "Form Pertama",
-//         field : [
-//             new TextField("Nama", true, 3),
-//             new NumberField("Umur", false, 1, 110),
-//             new EnumField("Kelas", true, ["X", "XI", "XII"]),
-//             new EmailField("Email", true)
-//         ],
-//         token : [{
-//             token : "1234567890",
-//             expireAt : new Date("2023-12-31T23:59:59.999Z")
-            
-//         }]
-//     })
-// }, 500)
+DataSchema.statics.getDataInfoByToken = async function (token) {
+    return this.findOne({ "tokenInfo.token": token }).select("-_id -__v").exec(); // untested
+};
 
-export const DataModel = mongoose.model("Data", DataSchema)
+DataSchema.statics.getDataInfo = async function (sessionUUID) {
+    return this.findOne({ ownerID: await AdminSessionModel.getAdminID(sessionUUID) }).exec();
+};
+
+DataSchema.statics.getAllDataBySessionUUID = async function (sessionUUID) {
+    const datas = await this.find({ ownerID: await AdminSessionModel.getAdminID(sessionUUID) })
+        .select("-_id -__v")
+        .exec();
+    if (datas.length === 0) return null;
+    return datas;
+};
+
+DataSchema.statics.getAllFormNameBySessionUUID = async function (sessionUUID) {
+    const datas = await this.find({ ownerID: await AdminSessionModel.getAdminID(sessionUUID) })
+        .select("formName")
+        .exec();
+    if (datas.length === 0) return null;
+    return datas;
+};
+
+DataSchema.statics.getAllTokenInfoByOwnerID = async function (adminSessionUUID) {
+    const datas = await this.find({ ownerID: await AdminSessionModel.getAdminID(adminSessionUUID) })
+        .select("tokenInfo formName -_id")
+        .lean()
+        .exec();
+    if (datas.length === 0) return null;
+
+    return datas.map((e) => {
+        const { ...data } = e.tokenInfo;
+        return Object.assign({ formName: e.formName }, data);
+    });
+};
+
+export const DataModel = mongoose.model("Data", DataSchema);

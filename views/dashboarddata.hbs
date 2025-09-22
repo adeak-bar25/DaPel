@@ -1,61 +1,61 @@
-<!DOCTYPE html>
 <html lang="id">
-  <head>
-    {{{head}}}
-  </head>
-  <body class="bg-slate-50 min-h-dvh">
-    {{{headerHTML}}}
-    <main class="below-header pl-3 pr-2 pt-3 md:px-6 md:pt-5">
-      <h1>Data Siswa</h1>
-      <p class="my-2">Disini anda dapat melihat data yang dimasukkan</p>
-        <h2>Table Data Siswa</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-lg border-collapse border border-slate-400 text-left [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
-            <colgroup>
-              <col class="w-4" />
-              <col class="w-[1%] whitespace-nowrap" />
-              <col class="w-[1%] whitespace-nowrap" />
-              <col/>
-              <col />
-              <col />
-              <col />
-              <col class="w-[1%] whitespace-nowrap" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Kelas</th>
-                <th>Nisn</th>
-                <th>Nama</th>
-                <th>Umur</th>
-                <th>Email</th>
-                <th>No. Telpon</th>
-                <th>Opsi</th>
-              </tr>
-            </thead>
-            <tbody class="[&_td]:text-lg">
-              {{{studentData}}}
-            </tbody>
-          </table>
+    <head>
+        {{{head}}}
+    </head>
+    <body class="min-h-dvh bg-slate-50">
+        {{{headerHTML}}}
+        <main class="below-header pt-3 pr-2 pl-3 md:px-6 md:pt-5">
+            <h1>Data Yang Dimasukkan</h1>
+            <p class="my-2">Disini anda dapat melihat data yang dimasukkan</p>
+            {{#if tableHeader}}
+                <div class="flex flex-col justify-between md:flex-row">
+                    <h2>Table Data</h2>
+                    <div>
+                        <label for="form-name" class="mr-2">Pilih Form : </label>
+                        <select name="FormName" id="form-name" class="rounded-md border border-slate-600 p-1 outline-0">
+                            {{#each dataList}}
+                                <option value="{{this.nameCamel}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <table class="w-full border-collapse border border-slate-400 text-left text-lg [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
+                    <div>
+                        <option value="Tournamen-Mobile-Legends">Tournamen Mobile Legends</option>
+                    </div>
+                    {{{tableHeader}}}
+                    <tbody class="[&_td]:text-lg">
+                        {{{studentData}}}
+                    </tbody>
+                </table>
+            {{else}}
+                <div class="flex min-h-[40vh] flex-col items-center justify-center">
+                    <img src="/asset/undraw_no-data_ig65.svg" class="w-28" alt="no data" />
+                    <p class="sm-p mt-3 text-center text-slate-900">
+                        {{msg}}
+                    </p>
+                </div>
+            {{/if}}
+            <div class="overflow-x-auto">
+            </div>
+        </main>
+        <dialog closedby="any" id="dialog" class="fixed z-50 m-auto bg-white p-4 outline-0 backdrop:bg-black/35">
+            <div class="font-bold">
+                Hapus Data
+            </div>
+            <p>Apakah anda ingin menghapus <span id="dialog-name"></span> dari data?</p>
+            <div class="mt-3 mb-1.5 flex justify-end gap-4 [&>button]:block [&>button]:cursor-pointer [&>button]:select-none">
+                <button class="hover:underline" id="close-dialog">Batal</button>
+                <button id="delete-btn" class="rounded-[3px] bg-red-500 p-1.5 text-white">Hapus</button>
+            </div>
+        </dialog>
+        <div id="toast" class="fixed bottom-4 left-[calc(var(--aside-width)+1rem)] flex gap-6 rounded-sm border border-violet-300/30 bg-violet-50 p-2 drop-shadow-lg">
+            <div id="toast-msg">test</div>
+            <button id="close-toast" class="cursor-pointer pr-2 text-violet-500 select-none">Ok</button>
         </div>
-      </section>
-    </main>
-    <dialog closedby="any" id="dialog" class="fixed z-50 p-4 bg-white backdrop:bg-black/35 outline-0 m-auto">
-      <div class="font-bold">
-        Hapus Data Siswa
-      </div>
-      <p>Apakah anda ingin menghapus <span id="dialog-name"></span> dari data?</p>
-      <div class="flex justify-end gap-4 mt-3 mb-1.5 [&>button]:block [&>button]:select-none [&>button]:cursor-pointer">
-        <button class="hover:underline" id="close-dialog">Batal</button>
-        <button id="delete-btn" class="bg-red-500 rounded-[3px] text-white p-1.5">Hapus</button>
-      </div>
-    </dialog>
-    <div id="toast" class="flex gap-6 fixed p-2 rounded-sm left-[calc(var(--aside-width)+1rem)] bottom-4 border border-violet-300/30 bg-violet-50 drop-shadow-lg">
-        <div id="toast-msg">test</div>
-        <button id="close-toast" class="text-violet-500 pr-2 cursor-pointer select-none">Ok</button>
-    </div>
-    {{{aside}}}
-    <script>
+        {{{aside}}}
+        {{!-- prettier-ignore --}}
+        <script>
       const dialog = document.getElementById('dialog')
       const dialogText = document.getElementById('dialog-name')
       const closeDialog = document.getElementById('close-dialog')
@@ -114,5 +114,5 @@
         dialog.close()
       })
     </script>
-  </body>
+    </body>
 </html>

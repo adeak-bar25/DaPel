@@ -1,4 +1,4 @@
-import { getAdminInfo, addAdmin, addAdminSession, AdminSessionModel, Admin } from "../data/data.js";
+import { getAdminInfo, addAdmin, AdminSessionModel, Admin } from "../data/data.js";
 import { saltRounds, storeTimeCookieSec } from '../config.js'
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -6,10 +6,8 @@ import {TokenVSchema} from './validate.js';
 import { object } from "zod";
 
 
-export async function authenticateAdmin(username, password){
-    const admin = await getAdminInfo(username)
-    if(!admin) return false
-    return bcrypt.compare(password, admin.passwordHash)
+export async function validatePassword(unValPass, passHash){
+    return await bcrypt.compare(unValPass, passHash)
 }
 
 export async function createNewAdminAccount(username, password) {
@@ -20,18 +18,18 @@ export async function createNewAdminAccount(username, password) {
     }
 }
 
-export async function createNewAdminSession(adminName, res){
-    const sessionUUID = generateUUID()
+export async function createNewAdminSession(adminID, res){
     try {
-        await addAdminSession(adminName, sessionUUID)
+        adminID = typeof(adminID) === "object"? adminID.toString() : adminID
+        const {sessionUUID} = await AdminSessionModel.createNewSession(adminID)
+        return res.cookie('loginDapelSes', sessionUUID, {
+            maxAge: parseInt(storeTimeCookieSec) * 1000,
+            httpOnly: true,
+            sameSite: "Strict"
+        })
     } catch (error) {
         throw error
     }
-    res.cookie('loginDapelSes', sessionUUID, {
-        maxAge: parseInt(storeTimeCookieSec) * 1000,
-        httpOnly: true,
-        sameSite: "Strict"
-    })
 }
 
 export async function changePassword(sessionId, oldPassword, newPassword){
