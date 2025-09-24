@@ -1,38 +1,38 @@
-<!DOCTYPE html>
 <html lang="id" class="overflow-hidden">
-  <head>
-    {{{head}}}
-  </head>
+    <head>
+        {{{head}}}
+    </head>
 
-  <body class="overflow-hidden">
-    {{{headerHTML}}}
-    <main class="grid h-dvh justify-between max-md:grid-rows-2 md:grid-cols-[repeat(2,_1fr)] md:pl-10">
-      <div class="flex-col justify-center pt-2 md:flex md:pt-4">
-        <h1>
-          Masukkan Token
-        </h1>
-        <p class="mt-2 md:w-[80%]">
-          Untuk memasukkan data, Anda harus memasukkan token untuk kelas anda terlebih dahulu.
-        </p>
-        {{{error}}}
-        <form action="/user/login" method="post">
-          <fieldset class="mt-4 mb-2">
-            <label for="token">
-              Token
-            </label>
-            <input type="number" placeholder="Masukkan token anda..." min="100000" max="999999" id="token" name="token" class="my-2 max-sm:min-w-55 w-[40%]" />
-          </fieldset>
-          <button class="btn-primary" type="submit">
-            Masuk
-          </button>
-        </form>
-      </div>
-      <div class="flex w-[100%] items-end justify-end md:h-svh -z-10">
-        <img src="/asset/undraw_authentication_tbfc.svg" class="animate-slide-fr relative -right-10 -bottom-2 h-full md:-right-26 md:-bottom-7" alt="" />
-      </div>
-    </main>
-    <script>
-      
-    </script>
-  </body>
+    <body class="overflow-hidden">
+        {{{headerHTML}}}
+        <main class="grid h-dvh justify-between max-md:grid-rows-2 md:grid-cols-[repeat(2,_1fr)] md:pl-10">
+            <div class="flex-col justify-center pt-2 md:flex md:pt-4">
+                <h1>
+                    Masukkan Token
+                </h1>
+                <p class="mt-2 md:w-[80%]">
+                    Untuk memasukkan data, Anda harus memasukkan token untuk kelas anda terlebih dahulu.
+                </p>
+                {{{error}}}
+                <form action="/user/login" method="post">
+                    <fieldset class="mt-4 mb-2">
+                        <label for="token">
+                            Token
+                            <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" placeholder="Masukkan token anda..." minlength="6" maxlength="6" required name="token" class="my-2 w-[40%] max-sm:min-w-55" />
+                    </fieldset>
+                    <button class="btn-primary" type="submit">
+                        Masuk
+                    </button>
+                </form>
+            </div>
+            <div class="-z-10 flex w-[100%] items-end justify-end md:h-svh">
+                <img src="/asset/undraw_authentication_tbfc.svg" class="animate-slide-fr relative -right-10 -bottom-2 h-full md:-right-26 md:-bottom-7" alt="" />
+            </div>
+        </main>
+        <script>
+
+        </script>
+    </body>
 </html>

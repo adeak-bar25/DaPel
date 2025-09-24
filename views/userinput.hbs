@@ -1,20 +1,19 @@
-<!DOCTYPE html>
 <html lang="en">
-  <head>
-    {{{head}}}
-  </head>
-  <body class="min-h-dvh">
-    {{{headerHTML}}}
-    <main class="min-h-dvh justify-between grid md:grid-cols-[45%_1fr] md:justify-between">
-        <div class="md:flex max-md:hidden items-center h-[calc(100vh-var(--header-height))]">
-          <img loading="lazy" class="-z-10 pl-4 pr-10 h-[80dvh]" src="/asset/undraw_personal-information_h7kf.svg" alt="">
-        </div>
-        <div class="col-start-2 ml-18 flex flex-col justify-center max-md:ml-2">
-          <h1>Masukkan Data Pribadi Anda</h1>
-          <p class="my-3">Silahkan masukkan data pribadi anda, pastikan Anda memasukkannya dengan benar! </p>
-          <form id="form" method="post" class="[&_input]:w-[90%] [&>input]:mb-1 [&>input]:mt-0.5">
-            {{{error}}}
-            {{!-- <label for="name">Nama</label>
+    <head>
+        {{{head}}}
+    </head>
+    <body class="min-h-dvh">
+        {{{headerHTML}}}
+        <main class="min-h-dvh-header mt-header-height grid justify-between md:grid-cols-[45%_1fr] md:justify-between">
+            <div class="h-[calc(100vh-var(--header-height))] items-center max-md:hidden md:flex">
+                <img loading="lazy" class="-z-10 h-[80dvh] pr-10 pl-4" src="/asset/undraw_personal-information_h7kf.svg" alt="" />
+            </div>
+            <div class="col-start-2 ml-18 flex flex-col justify-center max-md:ml-2">
+                <h1>Masukkan Data Pribadi Anda</h1>
+                <p class="my-3">Silahkan masukkan data pribadi anda, pastikan Anda memasukkannya dengan benar! </p>
+                <form id="form" method="post" class="[&_input]:w-[90%] [&>input]:mt-0.5 [&>input]:mb-1">
+                    {{{error}}}
+                    {{!-- <label for="name">Nama</label>
             <input type="text" name="name" id="name" placeholder="Masukkan nama anda" required>
             <label for="class">Kelas</label>
             <input disabled value="{{classname}}" type="text" class="bg-gray-200" id="class">
@@ -37,11 +36,12 @@
             <input type="email" name="email" placeholder="Masukkan email anda" id="email" required>
             <label for="phone">No.Telpon</label>
             <input type="phone" name="phone" placeholder="Masukkan Nomor Telpon anda" id="phone" required> --}}
-            {{{fields}}}
-            <button type="submit" class="btn-primary my-4 cursor-pointer">Kirim</button>
-          </form>
-        </div>
-        <script type="module">
+                    {{{fields}}}
+                    <button type="submit" class="btn-primary my-4 cursor-pointer">Kirim</button>
+                </form>
+            </div>
+            {{!-- prettier-ignore --}}
+            <script type="module">
           document.getElementById('form').setAttribute('action', `/user/input?token=${new URLSearchParams(window.location.search).get('token')}`)
 
           console.log()
@@ -49,6 +49,6 @@
 
 
         </script>
-    </main>
-  </body>
+        </main>
+    </body>
 </html>

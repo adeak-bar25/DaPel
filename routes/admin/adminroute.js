@@ -6,6 +6,7 @@ import { AdminSessionModel, Admin, DataModel } from "../../utils/data/data.js";
 import { infoSymAdmin } from "../../utils/data/model/adminmodel.js";
 import * as changeCase from "change-case";
 import { ZodError, StudentVSchema, InputSessionVSchema } from "./../../utils/controller/validate.js";
+import { SubmissionModel } from "../../utils/data/model/submissionModel.js";
 
 const router = express.Router();
 
@@ -87,19 +88,27 @@ router.get("/dashboard", async (req, res, next) => {
 router.get("/dashboard/data", async (req, res, next) => {
     try {
         const data = await DataModel.getAllDataBySessionUUID(req.cookies.loginDapelSes);
-        const fields = data?.fields;
-        let dataList = await DataModel.getAllFormNameBySessionUUID(req.cookies.loginDapelSes);
-        if (!dataList === 0) {
-            dataList = dataList.map((e) => {
-                return {
-                    ...e,
-                    nameCamel: changeCase.camelCase(e)
-                };
-            });
+        const fields = data[0]?.fields ?? null;
+        // let dataList = await DataModel.getAllFormNameBySessionUUID(req.cookies.loginDapelSes);
+        let submissions;
+        if (fields) {
+            submissions = await SubmissionModel.getAllSubmissionByToken(data[0].tokenInfo.token);
         }
-        // console.log(dataList);
+
+        // if (!dataList === 0) {
+        //     dataList = dataList.map((e) => {
+        //         return {
+        //             ...e,
+        //             nameCamel: changeCase.camelCase(e)
+        //         };
+        //     });
+        // }
+        // console.log();
+        // console.log(fields);
+
+        console.log(submissions);
         renderPage(res, "dashboarddata", "Data - Dashboard Admin", {
-            dataList,
+            submissions: Object.values(submissions),
             ...(fields ? { tableHeader: renderTableHeader(fields) } : { msg: "Belum Ada Data" })
         });
     } catch (error) {
@@ -113,12 +122,12 @@ router.get("/dashboard/options", (req, res) => {
 
 router.get("/dashboard/control", async (req, res) => {
     const tokens = await DataModel.getAllTokenInfoByOwnerID(req.cookies.loginDapelSes);
-    console.log(tokens);
+    // console.log(tokens);
     renderPage(res, "dashboardcontrol", "Control - Dashboard Admin", { tokens });
 });
 
 router.post("/dashboard/api/newinputsec", async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     if (!req.body.formName || !req.body.maxInput) return req.status(400).json({ ok: false, msg: "Form Name dan Max Input harus diisi" });
     try {
         // const data = await DataModel.create({

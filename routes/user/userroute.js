@@ -1,5 +1,5 @@
 import express from "express";
-import { renderPage } from "../../views/utils/render.js";
+import { renderPage, renderFormField } from "../../views/utils/render.js";
 import { DataModel, SubmissionModel } from "../../utils/data/data.js";
 import { TokenStatInfo } from "../../utils/data/model/dataModel.js";
 // import { StudentVSchema } from '../../utils/controller/validate.js';
@@ -7,9 +7,9 @@ import { TokenStatInfo } from "../../utils/data/model/dataModel.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.status(301).redirect("/user/login");
-});
+// router.get("/", (req, res) => {
+//     res.status(301).redirect("/user/login");
+// });
 
 router.get("/login", (req, res) => {
     function showPage(msg) {
@@ -36,14 +36,14 @@ router.post("/login", (req, res) => {
     res.redirect(`/user/input?token=${req.body.token}`);
 });
 
-router.use(async (req, res, next) => {
+router.use("/input", async (req, res, next) => {
     function redirectBadReq(errCode) {
         // console.log("it's bad req", errCode)
         return res.status(400).redirect(`/user/login?e=${errCode}`);
     }
 
     const tokeninfo = await DataModel.isTokenUsable(req.query.token);
-    if (!tokeninfo.success) {
+    if (!tokeninfo.ok) {
         switch (tokeninfo.error[0]) {
             case TokenStatInfo.INVALID:
                 return redirectBadReq("inval");
@@ -68,9 +68,17 @@ router.get("/input", async (req, res, next) => {
 
 router.post("/input", async (req, res, next) => {
     try {
-        SubmissionModel.insertSubmission(req.query.token, req.body);
+        SubmissionModel.insertSubmission(req.query.tconsole.logoken, req.body);
     } catch (error) {
         next(error);
+    }
+});
+
+router.get("/thanks", async (req, res) => {
+    try {
+        renderPage(res, "thanks", "Terima Kasih");
+    } catch (error) {
+        throw error;
     }
 });
 

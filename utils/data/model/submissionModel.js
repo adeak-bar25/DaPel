@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { DataModel } from "./dataModel.js";
 
 const SubmissionSchema = new mongoose.Schema({
-    dataID: {
-        type: Number,
+    token: {
+        type: String,
         required: true
     },
     insFields: {
@@ -22,6 +22,12 @@ SubmissionSchema.statics.insertSubmission = async function (token, insFields) {
 
 SubmissionSchema.statics.getAllSubmissionByDataID = async function (dataID) {
     return this.find({ dataID }).select("-_id -__v");
+};
+
+SubmissionSchema.statics.getAllSubmissionByToken = async function (token) {
+    const data = await this.find({ token }).select("-token -_id -__v");
+    if (data.length === 0) return null;
+    return data.map((e) => e.insFields);
 };
 
 export const SubmissionModel = mongoose.model("submissions", SubmissionSchema);
