@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import { mongoConnectionStr } from "./../config.js";
 
 export function connectToDB() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
-            mongoose.connect(mongoConnectionStr);
+            await mongoose.connect(mongoConnectionStr);
             resolve(console.log("Connected to Database"));
         } catch (error) {
             reject(console.error(`Can't Connect to Database: ${error}`));

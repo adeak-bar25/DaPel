@@ -1,6 +1,6 @@
 import express from "express";
 import { renderPage, renderStudentData, getAllStudentData } from "./../route.js";
-import { renderTableHeader } from "../../views/utils/render.js";
+import { renderTable } from "../../views/utils/render.js";
 import { createNewAdminAccount, createNewAdminSession, generateInputToken, cookieLogin, changePassword } from "../../utils/controller/auth.js";
 import { AdminSessionModel, Admin, DataModel } from "../../utils/data/data.js";
 import { infoSymAdmin } from "../../utils/data/model/adminmodel.js";
@@ -79,7 +79,8 @@ router.use("/dashboard/", async (req, res, next) => {
 
 router.get("/dashboard", async (req, res, next) => {
     try {
-        renderPage(res, "dashboardhome", "Dashboard Admin", { lastLogin: await AdminSessionModel.lastBeforeLatestLogin() });
+        const estimatedSub = await DataModel.getEstimatedNumberBySessionID(req.cookies.loginDapelSes);
+        renderPage(res, "dashboardhome", "Dashboard Admin", { estimatedSub });
     } catch (error) {
         next(error);
     }
@@ -88,11 +89,16 @@ router.get("/dashboard", async (req, res, next) => {
 router.get("/dashboard/data", async (req, res, next) => {
     try {
         const data = await DataModel.getAllDataBySessionUUID(req.cookies.loginDapelSes);
-        const fields = data[0]?.fields ?? null;
         // let dataList = await DataModel.getAllFormNameBySessionUUID(req.cookies.loginDapelSes);
-        let submissions;
-        if (fields) {
-            submissions = await SubmissionModel.getAllSubmissionByToken(data[0].tokenInfo.token);
+        let tables;
+        if (Array.isArray(data)) {
+            const submissionsPromise = data.map(async (e, i) => {
+                const fields = e.fields;
+                const listSubmission = await SubmissionModel.getAllSubmissionByToken(e.tokenInfo.token);
+                return Object.assign({ formName: e.formName }, { listSubmission, fields });
+            });
+            const submissions = await Promise.all(submissionsPromise);
+            tables = submissions.map((e) => renderTable(e));
         }
 
         // if (!dataList === 0) {
@@ -103,13 +109,15 @@ router.get("/dashboard/data", async (req, res, next) => {
         //         };
         //     });
         // }
-        // console.log();
-        // console.log(fields);
+        // renderPage(res, "dashboarddata", "Data - Dashboard Admin", {
+        //     submissions: Object.values(submissions.length !== 0 ? submissions : {}),
+        //     ...(fields ? { tableHeader: renderTableHeader(fields) } : { msg: "Belum Ada Data" })
+        // });
 
-        console.log(submissions);
+        // const tablesElm = await submissions.map(s => )
+
         renderPage(res, "dashboarddata", "Data - Dashboard Admin", {
-            submissions: Object.values(submissions),
-            ...(fields ? { tableHeader: renderTableHeader(fields) } : { msg: "Belum Ada Data" })
+            tables: tables
         });
     } catch (error) {
         next(error);

@@ -136,7 +136,7 @@ DataSchema.statics.isTokenUsable = async function (token) {
                 });
                 return;
             }
-            if (submissionInfo.tokenInfo.expireAt < new Date()) {
+            if (submissionInfo.tokenInfo.expireAt !== null && submissionInfo.tokenInfo.expireAt < new Date()) {
                 ctx.addIssue({
                     code: "custom",
                     message: TokenStatInfo.EXPIRED
@@ -162,7 +162,7 @@ DataSchema.statics.getFieldByDataID = async function (_id) {
 };
 
 DataSchema.statics.getDataInfoByToken = async function (token) {
-    return this.findOne({ "tokenInfo.token": token }).select("-_id -__v").exec(); // untested
+    return this.findOne({ "tokenInfo.token": token }).select("-_id -__v").exec();
 };
 
 DataSchema.statics.getDataInfo = async function (sessionUUID) {
@@ -176,6 +176,24 @@ DataSchema.statics.getAllDataBySessionUUID = async function (sessionUUID) {
     if (datas.length === 0) return null;
     return datas;
 };
+
+DataSchema.statics.getEstimatedNumberBySessionID = async function (sessionUUID) {
+    const datas = await this.find({ ownerID: await AdminSessionModel.getAdminID(sessionUUID) })
+        .select("tokenInfo.maxInput tokenInfo.currentInput -_id")
+        .exec();
+    if (datas.length <= 0) return null;
+    return datas.reduce(
+        (a, c) => {
+            return {
+                maxInput: a.maxInput + c.tokenInfo.maxInput,
+                currentInput: a.currentInput + c.tokenInfo.currentInput
+            };
+        },
+        { maxInput: 0, currentInput: 0 }
+    );
+};
+
+setTimeout(async () => console.log(await DataModel.getEstimatedNumberBySessionID("98273349-8d95-4acc-a100-24bc82eb3e65")), 0);
 
 DataSchema.statics.getAllFormNameBySessionUUID = async function (sessionUUID) {
     const datas = await this.find({ ownerID: await AdminSessionModel.getAdminID(sessionUUID) })

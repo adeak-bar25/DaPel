@@ -7,24 +7,24 @@
         <main class="below-header pt-3 pr-2 pl-3 md:px-6 md:pt-5">
             <h1>Data Yang Dimasukkan</h1>
             <p class="my-2">Disini anda dapat melihat data yang dimasukkan</p>
-            {{#if tableHeader}}
-                {{{submissions}}}
-                <div class="flex flex-col justify-between md:flex-row">
+            {{#if tables}}
+                {{! <div class="flex flex-col justify-between md:flex-row">
                     <h2>Table Data</h2>
                 </div>
                 <table class="w-full border-collapse border border-slate-400 text-left text-lg [&_td]:p-2 [&_td]:text-sm [&_th]:bg-slate-300 [&_th]:p-2 [&_th,td]:border-1 [&_th,td]:border-slate-400 [&_th:first-child,td:first-child]:text-center [&_tr:nth-child(even)]:bg-white [&_tr:nth-child(odd)]:bg-slate-100">
-                    {{{tableHeader}}}
+                    tableHeader
                     <tbody class="[&_td]:text-lg">
-                        {{#each submissions}}
+                        {{#each submissions
                             <tr>
-                                <td>{{inc @index}}</td>
-                                {{#each this}}
-                                    <td>{{this}}</td>
-                                {{/each}}
+                                <td>{{inc @index</td>
+                                {{#each this
+                                    <td>{{this</td>
+                                {{/each
                             </tr>
-                        {{/each}}
+                        each
                     </tbody>
-                </table>
+                </table> }}
+                {{{tables}}}
             {{else}}
                 <div class="flex min-h-[40vh] flex-col items-center justify-center">
                     <img src="/asset/undraw_no-data_ig65.svg" class="w-28" alt="no data" />

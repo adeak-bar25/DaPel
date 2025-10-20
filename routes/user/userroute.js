@@ -7,9 +7,9 @@ import { TokenStatInfo } from "../../utils/data/model/dataModel.js";
 
 const router = express.Router();
 
-// router.get("/", (req, res) => {
-//     res.status(301).redirect("/user/login");
-// });
+router.get("/", (req, res) => {
+    res.status(301).redirect("/user/login");
+});
 
 router.get("/login", (req, res) => {
     function showPage(msg) {
@@ -27,6 +27,8 @@ router.get("/login", (req, res) => {
             return showPage("Token sudah penuh, silahkan hubungi admin!");
         case "intrna":
             return showPage("Server gagal mengecek token, silahkan coba lagi!");
+        case "empty":
+            return showPage("Token tidak boleh kosong");
         default:
             return showPage();
     }
@@ -41,7 +43,7 @@ router.use("/input", async (req, res, next) => {
         // console.log("it's bad req", errCode)
         return res.status(400).redirect(`/user/login?e=${errCode}`);
     }
-
+    if (req.query.token === null) return redirectBadReq("empty");
     const tokeninfo = await DataModel.isTokenUsable(req.query.token);
     if (!tokeninfo.ok) {
         switch (tokeninfo.error[0]) {
@@ -68,7 +70,8 @@ router.get("/input", async (req, res, next) => {
 
 router.post("/input", async (req, res, next) => {
     try {
-        SubmissionModel.insertSubmission(req.query.tconsole.logoken, req.body);
+        SubmissionModel.insertSubmission(req.query.token, req.body);
+        res.redirect("/user/thanks");
     } catch (error) {
         next(error);
     }
