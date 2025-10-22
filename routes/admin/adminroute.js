@@ -174,8 +174,9 @@ router.delete("/dashboard/api/delete/student", async (req, res, next) => {
 });
 
 router.put("/dashboard/api/update/password", async (req, res, next) => {
-    const { ["loginDapelSes"]: sessionUUID, oldPassword, newPassword } = Object.assign(req.cookies, req.body);
-    // console.log(oldPassword, newPassword, sessionUUID);
+    console.log(req.body);
+    console.log(req.cookies);
+    const { loginDapelSes: sessionUUID, oldPassword, newPassword } = Object.assign(req.cookies, req.body);
     if (!oldPassword || !newPassword) {
         return res.status(400).json({ ok: false, msg: "Password lama dan baru harus diisi!" });
     }

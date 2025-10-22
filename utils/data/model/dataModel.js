@@ -193,8 +193,6 @@ DataSchema.statics.getEstimatedNumberBySessionID = async function (sessionUUID) 
     );
 };
 
-setTimeout(async () => console.log(await DataModel.getEstimatedNumberBySessionID("98273349-8d95-4acc-a100-24bc82eb3e65")), 0);
-
 DataSchema.statics.getAllFormNameBySessionUUID = async function (sessionUUID) {
     const datas = await this.find({ ownerID: await AdminSessionModel.getAdminID(sessionUUID) })
         .select("formName")

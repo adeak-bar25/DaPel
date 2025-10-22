@@ -53,15 +53,90 @@
                 <button class="close-dialog btn-primary cursor-pointer">Tutup</button>
             </div>
         </dialog>
+        {{!-- prettier-ignore --}}
         <script>
-            const pwDialog = document.getElementById('password-dialog') const successDialog = document.getElementById('success-dialog') const passwordSetting = document.getElementById('password-setting') passwordSetting.addEventListener('click', () => { pwDialog.showModal() }) document.querySelectorAll('.close-dialog').forEach(elm => { elm.onclick = function() { this.closest('dialog').close() } }) document.getElementById('password-form').addEventListener('submit', async (e) => {
-            e.preventDefault() const dataraw = await sendPassword(e.target) const data = await dataraw.json()
-            {{! console.log(data) }}
-            if(!dataraw.ok) return showError(data.msg || "Terjadi kesalahan pada Server!") showSuccessDialog(data.msg || "Password berhasil diubah!") }) document.querySelectorAll('.show-pws').forEach(elm => { elm.addEventListener('click', function() { const input = this.previousElementSibling if (input.type === 'password') { input.type = 'text' this.textContent = 'visibility_off' } else { input.type = 'password' this.textContent = 'visibility' } }) }) const oldPassword =
-            document.getElementById('old-password') const newPassword = document.getElementById('new-password') const confirmPassword = document.getElementById('confirm-password') const sendBtn = document.getElementById("input-btn") const errorElm = document.getElementById('error-elm') confirmPassword.addEventListener('input', () => { if (newPassword.value !== confirmPassword.value) { showError("Password tidak sama!") sendBtn.disabled = true }else{ hideError() sendBtn.disabled = false } });
-            newPassword.addEventListener('input', () => { if (newPassword.value !== confirmPassword.value) { console.log("Passwords do not match") sendBtn.disabled = true }else{ console.log("Passwords match") sendBtn.disabled = false } }); function sendPassword(formElm) { const formData = new FormData(formElm) const data = Object.fromEntries(formData.entries()) return fetch('/admin/dashboard/api/update/password', { method: 'PUT', body: JSON.stringify(data), headers: { 'Content-Type':
-            'application/json' } }) } function showSuccessDialog(message){ pwDialog.close() document.getElementById('success-text').textContent = message successDialog.showModal() } function showError(message) { errorElm.querySelector('#text').textContent = message errorElm.classList.remove('!hidden') } function hideError() { errorElm.classList.add('!hidden') errorElm.querySelector('#text').textContent = '' }
+            const pwDialog = document.getElementById('password-dialog');
+            const successDialog = document.getElementById('success-dialog');
 
+           const passwordSetting = document.getElementById('password-setting');
+
+            passwordSetting.addEventListener('click', () => {
+                pwDialog.showModal();
+            });
+
+            document.querySelectorAll('.close-dialog').forEach(elm => {
+                elm.onclick = function() {
+                    this.closest('dialog').close();
+                };
+            });
+
+            document.getElementById('password-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const dataraw = await sendPassword(e.target);
+                const data = await dataraw.json();
+                // console.log(data)
+                if (!dataraw.ok) return showError(data.msg || "Terjadi kesalahan pada Server!");
+                showSuccessDialog(data.msg || "Password berhasil diubah!");
+            });
+            document.querySelectorAll('.show-pws').forEach(elm => {
+                elm.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.textContent = 'visibility_off';
+                    } else {
+                        input.type = 'password';
+                        this.textContent = 'visibility';
+                    }
+                });
+            });
+            const oldPassword = document.getElementById('old-password');
+            const newPassword = document.getElementById('new-password');
+            const confirmPassword = document.getElementById('confirm-password');
+            const sendBtn = document.getElementById("input-btn");
+            const errorElm = document.getElementById('error-elm');
+            confirmPassword.addEventListener('input', () => {
+                if (newPassword.value !== confirmPassword.value) {
+                    showError("Password tidak sama!");
+                   sendBtn.disabled = true;
+                } else {
+                    hideError();
+                    sendBtn.disabled = false;
+                }
+            });
+            newPassword.addEventListener('input', () => {
+                if (newPassword.value !== confirmPassword.value) {
+                    console.log("Passwords do not match");
+                    sendBtn.disabled = true;
+                } else {
+                    console.log("Passwords match");
+                    sendBtn.disabled = false;
+                }
+            });
+            function sendPassword(formElm) {
+                const formData = new FormData(formElm);
+                const data = Object.fromEntries(formData.entries());
+                return fetch('/admin/dashboard/api/update/password', {
+                    method: 'PUT',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
+            function showSuccessDialog(message) {
+                pwDialog.close();
+                document.getElementById('success-text').textContent = message;
+                successDialog.showModal();
+            }
+            function showError(message) {
+                errorElm.querySelector('#text').textContent = message;
+                errorElm.classList.remove('!hidden');
+            }
+            function hideError() {
+                errorElm.classList.add('!hidden');
+                errorElm.querySelector('#text').textContent = '';
+            }
         </script>
         {{{aside}}}
     </body>

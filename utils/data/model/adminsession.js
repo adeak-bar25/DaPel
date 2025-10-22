@@ -35,11 +35,14 @@ SessionSchema.statics.lastBeforeLatestLogin = async function () {
 SessionSchema.statics.getAdminID = async function (sessionUUID) {
     try {
         const admininfo = await this.findOne({ sessionUUID }).select("adminID -_id");
-        return admininfo?.adminID;
+        // if (!admininfo) throw new Error("Session tidak ditemukan");
+        return admininfo.adminID;
     } catch (error) {
         throw error;
     }
 };
+
+// setTimeout(async () => console.log(await AdminSessionModel.getAdminID("4ae98284-f206-4d0a-9229-6fe555e33a6a")), 0);
 
 SessionSchema.statics.createNewSession = async function (adminID) {
     return await this.create({
