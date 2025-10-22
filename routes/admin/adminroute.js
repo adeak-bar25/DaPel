@@ -136,7 +136,7 @@ router.get("/dashboard/control", async (req, res) => {
 
 router.post("/dashboard/api/newinputsec", async (req, res, next) => {
     // console.log(req.body);
-    if (!req.body.formName || !req.body.maxInput) return req.status(400).json({ ok: false, msg: "Form Name dan Max Input harus diisi" });
+    if (!req.body.formName || !req.body.maxInput) return res.status(400).json({ ok: false, msg: "Form Name dan Max Input harus diisi" });
     try {
         // const data = await DataModel.create({
         //     ownerID: await AdminSessionModel.getAdminID(req.cookies.loginDapelSes),
