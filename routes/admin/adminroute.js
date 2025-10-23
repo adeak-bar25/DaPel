@@ -80,7 +80,9 @@ router.use("/dashboard/", async (req, res, next) => {
 router.get("/dashboard", async (req, res, next) => {
     try {
         const estimatedSub = await DataModel.getEstimatedNumberBySessionID(req.cookies.loginDapelSes);
-        renderPage(res, "dashboardhome", "Dashboard Admin", { estimatedSub });
+        const lastSubmission = await SubmissionModel.getLastSubmissionTime(req.cookies.loginDapelSes);
+        // console.log(lastSubmission);
+        renderPage(res, "dashboardhome", "Dashboard Admin", { estimatedSub, lastSubmission });
     } catch (error) {
         next(error);
     }

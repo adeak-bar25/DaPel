@@ -28,8 +28,12 @@
                         <p>Waktu Input Terakhir</p>
                         <div class="material-symbols-rounded group-hover:filled-icon">calendar_today</div>
                         <div>
-                            <p class="text-4xl">17 Juni 2025</p>
-                            <p class="flex items-center gap-1.5"><span class="material-symbols-rounded">search_activity</span><span>11 : 00 Wita</span></p>
+                            {{#if lastSubmission}}
+                                <p class="text-4xl" id="lastSubmissionDayElm" data-lastSub="{{lastSubmission}}">Loading...</p>
+                                <p class="flex items-center gap-1.5"><span class="material-symbols-rounded">search_activity</span><span id="lastSubmissionTimeElm">11 : 00 Wita</span></p>
+                            {{else}}
+                                <p class="col-span-2 mb-3 self-end text-4xl font-bold">Belum Ada Submission</p>
+                            {{/if}}
                         </div>
                     </div>
                     {{! <div class="bg-rose-300/80 group grid grid-cols-[95%_1fr] gap-y-1 grid-rows-[fit-content_repeat(1fr_2)]">
@@ -62,8 +66,21 @@
 
         </main>
         {{{aside}}}
-        <script>
-            const lastLogin = `{{lastLogin}}` const lastInput = `{{lastLogin}}`
+        {{!-- prettier-ignore --}}
+        <script type="module">
+            import dayjs from "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm";
+            import 'https://cdn.jsdelivr.net/npm/dayjs@1.11.10/locale/id/+esm';
+
+            dayjs.locale('id');
+
+            const lastSubmissionDayElm = document.getElementById("lastSubmissionDayElm"); 
+            const lastSubmissionTimeElm = document.getElementById("lastSubmissionTimeElm");
+
+                console.log(lastSubmissionDayElm.dataset.lastsub )
+            if(lastSubmissionDayElm.dataset.lastsub){
+                lastSubmissionDayElm.textContent = dayjs(lastSubmissionDayElm.dataset.lastSub).format("DD MMMM YYYY")
+                lastSubmissionTimeElm.textContent = dayjs(lastSubmissionDayElm.dataset.lastSub).format("HH:mm")
+            }
         </script>
     </body>
 </html>

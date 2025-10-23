@@ -36,6 +36,7 @@ SessionSchema.statics.getAdminID = async function (sessionUUID) {
     try {
         const admininfo = await this.findOne({ sessionUUID }).select("adminID -_id");
         // if (!admininfo) throw new Error("Session tidak ditemukan");
+        if (!admininfo) return null;
         return admininfo.adminID;
     } catch (error) {
         throw error;
